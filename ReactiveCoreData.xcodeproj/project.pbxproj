@@ -77,7 +77,9 @@
 		1667385B1729695E00CABF2C = {
 			isa = PBXGroup;
 			children = (
-				1667386D1729695E00CABF2C /* ReactiveCoreData */,
+				1667389F17296A8E00CABF2C /* External */,
+				1667389E17296A8400CABF2C /* ReactiveCocoa */,
+				1667386D1729695E00CABF2C /* ReactiveCoreDataApp */,
 				1667388D1729695E00CABF2C /* ReactiveCoreDataTests */,
 				166738661729695E00CABF2C /* Frameworks */,
 				166738651729695E00CABF2C /* Products */,
@@ -113,7 +115,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		1667386D1729695E00CABF2C /* ReactiveCoreData */ = {
+		1667386D1729695E00CABF2C /* ReactiveCoreDataApp */ = {
 			isa = PBXGroup;
 			children = (
 				166738791729695E00CABF2C /* ASWAppDelegate.h */,
@@ -122,7 +124,7 @@
 				1667387F1729695E00CABF2C /* ReactiveCoreData.xcdatamodeld */,
 				1667386E1729695E00CABF2C /* Supporting Files */,
 			);
-			path = ReactiveCoreData;
+			path = ReactiveCoreDataApp;
 			sourceTree = "<group>";
 		};
 		1667386E1729695E00CABF2C /* Supporting Files */ = {
@@ -154,6 +156,21 @@
 				166738901729695E00CABF2C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1667389E17296A8400CABF2C /* ReactiveCocoa */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = ReactiveCocoa;
+			path = ReactiveCoreData;
+			sourceTree = "<group>";
+		};
+		1667389F17296A8E00CABF2C /* External */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = External;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -391,6 +408,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReactiveCoreData/ReactiveCoreData-Prefix.pch";
 				INFOPLIST_FILE = "ReactiveCoreData/ReactiveCoreData-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -403,6 +421,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReactiveCoreData/ReactiveCoreData-Prefix.pch";
 				INFOPLIST_FILE = "ReactiveCoreData/ReactiveCoreData-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
