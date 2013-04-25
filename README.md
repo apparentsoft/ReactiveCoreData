@@ -8,7 +8,7 @@ To use, copy the source files from ReactiveCoreData to your project.
 The idea is to write code such as:
 
 ```objc
-[[[[[[MyManagedObject fetch] where:attribute equals:10] limit:50] sortBy:attribute] execute]
+[[[[[[MyManagedObject fetch] where:attribute equals:valueSignal] limit:50] sortBy:sortSignal] execute]
 subscribeNext: ^(NSArray *)objects {
 	NSLog(@"Fetched %@", objects);
 }];
@@ -16,5 +16,5 @@ subscribeNext: ^(NSArray *)objects {
 
 
 ###TODO:
-- Everything
+- Like, everything
 

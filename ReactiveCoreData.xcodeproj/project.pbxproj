@@ -21,8 +21,10 @@
 		166738B017296D5400CABF2C /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 		166738BA17296FBE00CABF2C /* NSManagedObject+RACFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */; };
 		166738BD1729700300CABF2C /* RACManagedObjectFetchSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738BC1729700300CABF2C /* RACManagedObjectFetchSpecs.m */; };
+		16AF98F917297EBF000E9B8B /* RACSignal+RCDFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */; };
 		16BE18E71729788E00096F6C /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18CD1729786400096F6C /* libExpecta.a */; };
 		16BE18E81729788E00096F6C /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18DE1729787F00096F6C /* libSpecta.a */; };
+		16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,8 +171,12 @@
 		166738B817296FBE00CABF2C /* NSManagedObject+RACFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+RACFetch.h"; sourceTree = "<group>"; };
 		166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+RACFetch.m"; sourceTree = "<group>"; };
 		166738BC1729700300CABF2C /* RACManagedObjectFetchSpecs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RACManagedObjectFetchSpecs.m; sourceTree = "<group>"; };
+		16AF98F717297EBF000E9B8B /* RACSignal+RCDFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RACSignal+RCDFetch.h"; sourceTree = "<group>"; };
+		16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RACSignal+RCDFetch.m"; sourceTree = "<group>"; };
 		16BE18C51729786400096F6C /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = External/ReactiveCocoa/external/expecta/Expecta.xcodeproj; sourceTree = "<group>"; };
 		16BE18D61729787F00096F6C /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = External/ReactiveCocoa/external/specta/Specta.xcodeproj; sourceTree = "<group>"; };
+		16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+ReactiveCoreData.h"; sourceTree = "<group>"; };
+		16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+ReactiveCoreData.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -288,6 +294,10 @@
 			children = (
 				166738B817296FBE00CABF2C /* NSManagedObject+RACFetch.h */,
 				166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */,
+				16AF98F717297EBF000E9B8B /* RACSignal+RCDFetch.h */,
+				16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */,
+				16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */,
+				16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */,
 			);
 			path = ReactiveCoreData;
 			sourceTree = "<group>";
@@ -542,6 +552,8 @@
 				1667387B1729695E00CABF2C /* ASWAppDelegate.m in Sources */,
 				166738811729695E00CABF2C /* ReactiveCoreData.xcdatamodeld in Sources */,
 				166738BA17296FBE00CABF2C /* NSManagedObject+RACFetch.m in Sources */,
+				16AF98F917297EBF000E9B8B /* RACSignal+RCDFetch.m in Sources */,
+				16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
