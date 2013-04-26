@@ -13,6 +13,12 @@
 @interface NSManagedObject (RACFetch)
 
 // Creates a signal that sends an NSFetchRequest for specified entity
-+ (RACSignal *)fetchEntity:(NSString *)entityName;
++ (RACSignal *)rcd_all;
 
+// returns Entity name string
+//
+// By default returns class name string (which works well for XCode generated subclasses)
+// mogenerator also defines such a method in its private subclass interface, so it'll override this one
++ (NSString*)entityName;
++ (instancetype)insert;
 @end

@@ -10,10 +10,16 @@
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
 @implementation RACSignal (RCDFetch)
-- (RACSignal *)executeFetchInMOC:(NSManagedObjectContext *)ctx;
+- (RACSignal *)fetchInMOC:(NSManagedObjectContext *)moc;
 {
     return [self flattenMap:^RACStream *(NSFetchRequest *req) {
-        return [ctx executeRequest:req];
+        return [moc executeRequest:req];
     }];
 }
+
+- (RACSignal *)fetch;
+{
+    return [self fetchInMOC:[NSManagedObjectContext currentMoc]];
+}
+
 @end

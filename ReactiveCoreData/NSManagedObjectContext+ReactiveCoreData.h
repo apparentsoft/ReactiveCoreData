@@ -8,9 +8,16 @@
 
 #import <CoreData/CoreData.h>
 
+@class RACSignal;
+
+static NSString const *kRCDCurrentManagedObjectContext;
+static NSString const *kRCDMainManagedObjectContext;
+
 @interface NSManagedObjectContext (ReactiveCoreData)
 
 // Returns a signal that sends result of executing a fetch request (or sends error)
 - (RACSignal *)executeRequest:(NSFetchRequest *)request;
-
++ (NSManagedObjectContext *)context;
++ (void)setMainContext:(NSManagedObjectContext *)moc;
++ (NSManagedObjectContext *)currentMoc;
 @end

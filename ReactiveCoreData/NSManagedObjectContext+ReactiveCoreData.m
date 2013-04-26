@@ -7,7 +7,11 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveCocoa/RACSignal.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
+
+static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
+static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectContext";
 
 @implementation NSManagedObjectContext (ReactiveCoreData)
 
@@ -25,5 +29,30 @@
         return nil;
     }];
 }
+
++ (NSManagedObjectContext *)context;
+{
+    NSManagedObjectContext *moc = [[self alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+    // TODO: connect to persistent store
+    return moc;
+}
+
++ (void)setMainContext:(NSManagedObjectContext *)moc;
+{
+    [NSThread mainThread].threadDictionary[kRCDMainManagedObjectContext] = moc;
+    [NSThread mainThread].threadDictionary[kRCDCurrentManagedObjectContext] = moc;
+}
+
++ (NSManagedObjectContext *)currentMoc;
+{
+    NSMutableDictionary *threadDictionary = [NSThread.currentThread threadDictionary];
+    NSManagedObjectContext *moc = threadDictionary[kRCDCurrentManagedObjectContext];
+    if (!moc) {
+        moc = [NSManagedObjectContext context];
+        threadDictionary[kRCDCurrentManagedObjectContext] = moc;
+    }
+    return moc;
+}
+
 
 @end

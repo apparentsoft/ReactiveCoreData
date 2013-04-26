@@ -11,6 +11,6 @@
 @interface RACSignal (RCDFetch)
 
 // Execute the NSFetchRequest that's sent in next, in specified context
-- (RACSignal *)executeFetchInMOC:(NSManagedObjectContext *)ctx;
+- (RACSignal *)fetchInMOC:(NSManagedObjectContext *)moc;
 
 @end

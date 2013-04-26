@@ -8,17 +8,29 @@
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "NSManagedObject+RACFetch.h"
+#import "NSManagedObjectContext+ReactiveCoreData.h"
 
 @implementation NSManagedObject (RACFetch)
 
-+ (RACSignal *)fetchEntity:(NSString *)entityName;
++ (RACSignal *)rcd_all;
 {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
         [subscriber sendNext:fetchRequest];
         [subscriber sendCompleted];
         return nil;
     }];
 }
+
++ (NSString *)entityName;
+{
+    return NSStringFromClass(self);
+}
+
++ (instancetype)insert;
+{
+    return [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[NSManagedObjectContext currentMoc]];
+}
+
 
 @end

@@ -11,6 +11,8 @@
 #import <Expecta.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "NSManagedObject+RACFetch.h"
+#import "NSManagedObjectContext+ReactiveCoreData.h"
+#import "Parent.h"
 
 NSManagedObjectContext * contextForTest()
 {
@@ -24,6 +26,7 @@ NSManagedObjectContext * contextForTest()
     NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     [ctx setPersistentStoreCoordinator:psc];
     [ctx setUndoManager:nil];
+    [NSManagedObjectContext setMainContext:ctx];
     return ctx;
 }
 
@@ -47,13 +50,19 @@ describe(@"NSManagedObject", ^{
     });
 
     it(@"creates a fetch request signal", ^{
-        RACSignal *signal = [NSManagedObject fetchEntity:@"Parent"];
+        RACSignal *signal = Parent.rcd_all;
         [signal subscribeNext:^(NSFetchRequest *req) {
             expect(req).toNot.beNil();
             expect(req.entityName).to.equal(@"Parent");
             executed = YES;
         }];
         expect(executed).to.beTruthy();
+    });
+
+    it(@"inserts into context", ^{
+        Parent *parent = [Parent insert];
+        expect(parent).toNot.beNil();
+        expect(parent.managedObjectContext).to.equal(ctx);
     });
 });
 

@@ -25,6 +25,7 @@
 		16BE18E71729788E00096F6C /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18CD1729786400096F6C /* libExpecta.a */; };
 		16BE18E81729788E00096F6C /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18DE1729787F00096F6C /* libSpecta.a */; };
 		16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
+		16CEF48E172ACD7500921072 /* Parent.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF48D172ACD7500921072 /* Parent.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,6 +178,8 @@
 		16BE18D61729787F00096F6C /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = External/ReactiveCocoa/external/specta/Specta.xcodeproj; sourceTree = "<group>"; };
 		16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+ReactiveCoreData.h"; sourceTree = "<group>"; };
 		16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+ReactiveCoreData.m"; sourceTree = "<group>"; };
+		16CEF48C172ACD7500921072 /* Parent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parent.h; sourceTree = "<group>"; };
+		16CEF48D172ACD7500921072 /* Parent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parent.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +257,8 @@
 				1667387A1729695E00CABF2C /* ASWAppDelegate.m */,
 				1667387C1729695E00CABF2C /* MainMenu.xib */,
 				1667387F1729695E00CABF2C /* ReactiveCoreData.xcdatamodeld */,
+				16CEF48C172ACD7500921072 /* Parent.h */,
+				16CEF48D172ACD7500921072 /* Parent.m */,
 				1667386E1729695E00CABF2C /* Supporting Files */,
 			);
 			path = ReactiveCoreDataApp;
@@ -554,6 +559,7 @@
 				166738BA17296FBE00CABF2C /* NSManagedObject+RACFetch.m in Sources */,
 				16AF98F917297EBF000E9B8B /* RACSignal+RCDFetch.m in Sources */,
 				16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
+				16CEF48E172ACD7500921072 /* Parent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

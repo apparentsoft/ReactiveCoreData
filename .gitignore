@@ -12,3 +12,4 @@ build/*
 !default.xcworkspace
 xcuserdata
 profile
+.idea
