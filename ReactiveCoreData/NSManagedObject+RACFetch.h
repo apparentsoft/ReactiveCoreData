@@ -13,7 +13,7 @@
 @interface NSManagedObject (RACFetch)
 
 // Creates a signal that sends an NSFetchRequest for specified entity
-+ (RACSignal *)rcd_all;
++ (RACSignal *)findAll;
 
 // returns Entity name string
 //

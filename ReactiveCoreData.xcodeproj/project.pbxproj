@@ -26,6 +26,8 @@
 		16BE18E81729788E00096F6C /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18DE1729787F00096F6C /* libSpecta.a */; };
 		16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
 		16CEF48E172ACD7500921072 /* Parent.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF48D172ACD7500921072 /* Parent.m */; };
+		16CEF49C172D2A1100921072 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
+		16CEF49F172D2A2800921072 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +136,13 @@
 			remoteGlobalIDString = E9D96A2514B6B8AB007D9521;
 			remoteInfo = Specta;
 		};
+		16CEF49D172D2A1800921072 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166738A017296D0200CABF2C /* ReactiveCocoa.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 88037F8215056328001A5B19;
+			remoteInfo = ReactiveCocoa;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -144,6 +153,16 @@
 			dstSubfolderSpec = 10;
 			files = (
 				166738B017296D5400CABF2C /* ReactiveCocoa.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CEF498172D25B300921072 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				16CEF49F172D2A2800921072 /* ReactiveCocoa.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +215,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16CEF49C172D2A1100921072 /* ReactiveCocoa.framework in Frameworks */,
 				16BE18E71729788E00096F6C /* libExpecta.a in Frameworks */,
 				16BE18E81729788E00096F6C /* libSpecta.a in Frameworks */,
 				166738891729695E00CABF2C /* SenTestingKit.framework in Frameworks */,
@@ -375,11 +395,13 @@
 				166738821729695E00CABF2C /* Sources */,
 				166738831729695E00CABF2C /* Frameworks */,
 				166738841729695E00CABF2C /* Resources */,
+				16CEF498172D25B300921072 /* CopyFiles */,
 				166738851729695E00CABF2C /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				16CEF49E172D2A1800921072 /* PBXTargetDependency */,
 				16BE18E61729788400096F6C /* PBXTargetDependency */,
 				16BE18D51729786B00096F6C /* PBXTargetDependency */,
 				1667388C1729695E00CABF2C /* PBXTargetDependency */,
@@ -593,6 +615,11 @@
 			isa = PBXTargetDependency;
 			name = Specta;
 			targetProxy = 16BE18E51729788400096F6C /* PBXContainerItemProxy */;
+		};
+		16CEF49E172D2A1800921072 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ReactiveCocoa;
+			targetProxy = 16CEF49D172D2A1800921072 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

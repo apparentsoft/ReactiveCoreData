@@ -12,7 +12,7 @@
 
 @implementation NSManagedObject (RACFetch)
 
-+ (RACSignal *)rcd_all;
++ (RACSignal *)findAll;
 {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:self.entityName];
