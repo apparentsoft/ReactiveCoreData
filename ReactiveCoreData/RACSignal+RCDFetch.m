@@ -56,4 +56,27 @@
             return req;
         }];
 }
+
+- (instancetype)saveMoc;
+{
+    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+        return [self
+            subscribeNext:^(id x) {
+                NSError *error = nil;
+                BOOL success = [[NSManagedObjectContext currentMoc] save:&error];
+                if (!success) {
+                    [subscriber sendError:error];
+                }
+                else {
+                    [subscriber sendNext:x];
+                }
+            }
+            error:^(NSError *error) {
+                [subscriber sendError:error];
+            }
+            completed:^{
+                [subscriber sendCompleted];
+            }];
+    }];
+}
 @end

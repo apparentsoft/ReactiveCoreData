@@ -7,7 +7,6 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <ReactiveCocoa/RACSignal.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
@@ -48,14 +47,33 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 + (NSManagedObjectContext *)context;
 {
     NSManagedObjectContext *moc = [[self alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
-    // TODO: connect to persistent store
+    NSManagedObjectContext *mainContext = [self mainMoc];
+    if (mainContext) {
+        moc.persistentStoreCoordinator = mainContext.persistentStoreCoordinator;
+    }
     return moc;
+}
+
++ (NSManagedObjectContext *)mainMoc;
+{
+    return [NSThread mainThread].threadDictionary[kRCDMainManagedObjectContext];
+}
+
+- (void)rcd_mergeChanges:(NSNotification *)note;
+{
+    if (note.object == self) return;
+    [self performSelector:@selector(mergeChangesFromContextDidSaveNotification:) onThread:[NSThread mainThread] withObject:note waitUntilDone:YES];
 }
 
 + (void)setMainContext:(NSManagedObjectContext *)moc;
 {
+    if ([self mainMoc]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:[self mainMoc] name:NSManagedObjectContextDidSaveNotification object:nil];
+    }
     [NSThread mainThread].threadDictionary[kRCDMainManagedObjectContext] = moc;
     [NSThread mainThread].threadDictionary[kRCDCurrentManagedObjectContext] = moc;
+
+    [[NSNotificationCenter defaultCenter] addObserver:moc selector:@selector(rcd_mergeChanges:) name:NSManagedObjectContextDidSaveNotification object:nil];
 }
 
 + (NSManagedObjectContext *)currentMoc;

@@ -24,10 +24,11 @@ NSManagedObjectContext * contextForTest()
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-    NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     [ctx setPersistentStoreCoordinator:psc];
     [ctx setUndoManager:nil];
     [NSManagedObjectContext setMainContext:ctx];
+    [ctx save:NULL];
     return ctx;
 }
 
@@ -118,6 +119,40 @@ describe(@"FetchRequest operations:", ^{
     it(@"handles predicates for constants", ^{
         NSArray *result = [[[Parent.findAll where:@"name == %@" args:@[@"Jane"]] fetch] first];
         expect(result).to.equal(@[Jane]);
+    });
+});
+
+describe(@"Cross-Thread functionality", ^{
+    it(@"Creates a new background context", ^{
+        __block BOOL checked = NO;
+        [[[RACSignal empty]
+            deliverOn:[RACScheduler scheduler]]
+            subscribeCompleted:^{
+                NSManagedObjectContext *moc = [NSManagedObjectContext currentMoc];
+                expect(moc).toNot.equal(ctx);
+                checked = YES;
+            }];
+        expect(checked).will.beTruthy();
+    });
+
+    it(@"Merges changes from background context", ^{
+        __block BOOL completed = NO;
+        [[[[[[RACSignal return:@"empty"]
+            deliverOn:[RACScheduler scheduler]]
+            doNext:^(id _){
+                Parent *dad = [Parent insert];
+                dad.name = @"Dad";
+            }]
+            saveMoc]
+            deliverOn:RACScheduler.mainThreadScheduler]
+            subscribeNext:^(id _){
+                [[[Parent findAll] fetch]
+                    subscribeNext:^(NSArray *result) {
+                        expect([[result lastObject] name]).to.equal(@"Dad");
+                        completed = YES;
+                    }];
+            }];
+        expect(completed).will.beTruthy();
     });
 });
 

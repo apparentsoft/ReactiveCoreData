@@ -36,4 +36,5 @@
 // Create a "%K == %@" predicate with key and value as arguments
 - (instancetype)where:(id)key equals:(id)value;
 
+- (instancetype)saveMoc;
 @end
