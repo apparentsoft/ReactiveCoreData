@@ -30,6 +30,21 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
     }];
 }
 
+- (RACSignal *)countRequest:(NSFetchRequest *)request
+{
+    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+        NSError *error = nil;
+        NSUInteger count = [self countForFetchRequest:request error:&error];
+        if (error) {
+            [subscriber sendError:error];
+            return nil;
+        }
+        [subscriber sendNext:@(count)];
+        [subscriber sendCompleted];
+        return nil;
+    }];
+}
+
 + (NSManagedObjectContext *)context;
 {
     NSManagedObjectContext *moc = [[self alloc] initWithConcurrencyType:NSConfinementConcurrencyType];

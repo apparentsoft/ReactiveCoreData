@@ -13,6 +13,7 @@
 #import "NSManagedObject+RACFetch.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 #import "Parent.h"
+#import "RACSignal+RCDFetch.h"
 
 NSManagedObjectContext * contextForTest()
 {
@@ -63,6 +64,19 @@ describe(@"NSManagedObject", ^{
         Parent *parent = [Parent insert];
         expect(parent).toNot.beNil();
         expect(parent.managedObjectContext).to.equal(ctx);
+    });
+
+    it(@"counts results", ^{
+        [Parent insert];
+        expect([[[Parent rcd_all] count] first]).to.equal(@1);
+    });
+
+    it(@"fetches results", ^{
+        Parent *p1 = [Parent insert];
+        Parent *p2 = [Parent insert];
+        NSArray *result = [[[Parent rcd_all] fetch] first];
+        expect(result).to.contain(p1);
+        expect(result).to.contain(p2);
     });
 });
 

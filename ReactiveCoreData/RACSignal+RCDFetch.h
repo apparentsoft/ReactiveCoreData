@@ -13,4 +13,7 @@
 // Execute the NSFetchRequest that's sent in next, in specified context
 - (RACSignal *)fetchInMOC:(NSManagedObjectContext *)moc;
 
+- (RACSignal *)countInMOC:(NSManagedObjectContext *)moc;
+- (RACSignal *)fetch;
+- (RACSignal *)count;
 @end

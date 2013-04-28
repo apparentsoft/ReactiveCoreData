@@ -17,6 +17,7 @@ static NSString const *kRCDMainManagedObjectContext;
 
 // Returns a signal that sends result of executing a fetch request (or sends error)
 - (RACSignal *)executeRequest:(NSFetchRequest *)request;
+- (RACSignal *)countRequest:(NSFetchRequest *)request;
 + (NSManagedObjectContext *)context;
 + (void)setMainContext:(NSManagedObjectContext *)moc;
 + (NSManagedObjectContext *)currentMoc;

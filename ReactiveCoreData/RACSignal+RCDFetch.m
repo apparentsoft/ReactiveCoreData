@@ -17,9 +17,21 @@
     }];
 }
 
+- (RACSignal *)countInMOC:(NSManagedObjectContext *)moc;
+{
+    return [self flattenMap:^RACStream *(NSFetchRequest *req) {
+        return [moc countRequest:req];
+    }];
+}
+
 - (RACSignal *)fetch;
 {
     return [self fetchInMOC:[NSManagedObjectContext currentMoc]];
+}
+
+- (RACSignal *)count;
+{
+    return [self countInMOC:[NSManagedObjectContext currentMoc]];
 }
 
 @end
