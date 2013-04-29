@@ -12,16 +12,16 @@
 @implementation RACSignal (RCDFetch)
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 {
-    return [self flattenMap:^RACStream *(NSFetchRequest *req) {
+    return [[self flattenMap:^RACStream *(NSFetchRequest *req) {
         return [moc executeRequest:req];
-    }];
+    }]  setNameWithFormat:@"[%@] -fetchInMOC:%@", self.name, moc];
 }
 
 - (instancetype)countInMOC:(NSManagedObjectContext *)moc;
 {
-    return [self flattenMap:^RACStream *(NSFetchRequest *req) {
+    return [[self flattenMap:^RACStream *(NSFetchRequest *req) {
         return [moc countRequest:req];
-    }];
+    }]  setNameWithFormat:@"[%@] -countInMOC:%@", self.name, moc];
 }
 
 - (instancetype)fetch;
@@ -49,17 +49,27 @@
         else
             [signals addObject:[RACSignal return:arg]];
     }
-    return [[self combineLatestWith:[RACSignal combineLatest:signals]]
+    return [[[self combineLatestWith:[RACSignal combineLatest:signals]]
         reduceEach:^(NSFetchRequest *req, RACTuple *arguments) {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:format argumentArray:[arguments allObjects]];
             req.predicate = predicate;
             return req;
-        }];
+        }] setNameWithFormat:@"[%@] -where:%@ args:%@", self.name, format, args];
+}
+
+- (instancetype)limit:(id)limitOrSignal;
+{
+    RACSignal *limitSignal = [limitOrSignal isKindOfClass:[RACStream class]] ? limitOrSignal : [RACSignal return:limitOrSignal];
+    return [[[self combineLatestWith:limitSignal]
+        reduceEach:^(NSFetchRequest *req, NSNumber *limit) {
+            req.fetchLimit = limit.unsignedIntegerValue;
+            return req;
+        }] setNameWithFormat:@"[%@] -limit:%@", self.name, limitOrSignal ];
 }
 
 - (instancetype)saveMoc;
 {
-    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+    return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         return [self
             subscribeNext:^(id x) {
                 NSError *error = nil;
@@ -77,6 +87,6 @@
             completed:^{
                 [subscriber sendCompleted];
             }];
-    }];
+    }] setNameWithFormat:@"[%@] -saveMoc", self.name];
 }
 @end

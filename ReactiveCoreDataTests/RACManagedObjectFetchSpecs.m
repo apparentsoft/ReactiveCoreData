@@ -35,13 +35,16 @@ NSManagedObjectContext * contextForTest()
 SpecBegin(RACMagagedObjectFetch)
 
 __block NSManagedObjectContext *ctx = nil;
+__block BOOL completed = NO;
 
 beforeEach(^{
     ctx = contextForTest();
+    completed = NO;
 });
 
 afterEach(^{
     ctx = nil;
+    [NSManagedObjectContext setMainContext:nil];
 });
 
 describe(@"NSManagedObject", ^{
@@ -116,27 +119,69 @@ describe(@"FetchRequest operations:", ^{
         expect(final_result).to.equal(exp);
     });
 
+    it(@"sends complete", ^{
+        [[Parent.findAll fetch]
+            subscribeNext:^(id x) {
+            }
+            completed:^{
+                completed = YES;
+            }];
+        expect(completed).to.beTruthy();
+    });
+
     it(@"handles predicates for constants", ^{
         NSArray *result = [[[Parent.findAll where:@"name == %@" args:@[@"Jane"]] fetch] first];
         expect(result).to.equal(@[Jane]);
     });
+
+    context(@"check limits", ^{
+        beforeEach(^{
+            for (NSUInteger i=0; i<50; i++) {
+                [Parent insert];
+            }
+        });
+
+        it(@"number limits", ^{
+            [[[Parent.findAll limit:@10] fetch]
+                subscribeNext:^(id x) {
+                    expect(x).to.haveCountOf(10);
+                    completed = YES;
+                }];
+            expect(completed).to.beTruthy();
+        });
+
+        it(@"limit signals", ^{
+            RACSubject *limitSignal = [RACSubject subject];
+            __block NSArray *final_result;
+            [[[[Parent.findAll limit:limitSignal] fetch] collect]
+                subscribeNext:^(id x) {
+                    final_result = x;
+                }];
+            [limitSignal sendNext:@10];
+            [limitSignal sendNext:@30];
+            [limitSignal sendCompleted];
+            expect(final_result).to.haveCountOf(2);
+            expect(final_result[0]).to.haveCountOf(10);
+            expect(final_result[1]).to.haveCountOf(30);
+        });
+    });
+
+
 });
 
 describe(@"Cross-Thread functionality", ^{
     it(@"Creates a new background context", ^{
-        __block BOOL checked = NO;
         [[[RACSignal empty]
             deliverOn:[RACScheduler scheduler]]
             subscribeCompleted:^{
                 NSManagedObjectContext *moc = [NSManagedObjectContext currentMoc];
                 expect(moc).toNot.equal(ctx);
-                checked = YES;
+                completed = YES;
             }];
-        expect(checked).will.beTruthy();
+        expect(completed).will.beTruthy();
     });
 
     it(@"Merges changes from background context", ^AsyncBlock{
-        __block BOOL completed = NO;
         [[[[[[RACSignal return:@"empty"]
             deliverOn:[RACScheduler scheduler]]
             doNext:^(id _){
@@ -157,8 +202,8 @@ describe(@"Cross-Thread functionality", ^{
     });
 
     it(@"Has a signal that posts after a merge", ^AsyncBlock{
-        __block BOOL completed = NO;
-        [[[[[RACSignal return:@"empty"]
+        __block BOOL local_completed = NO;
+        id d1 = [[[[[RACSignal return:@"empty"]
             deliverOn:[RACScheduler scheduler]]
             doNext:^(id _){
                 [Parent insert];
@@ -166,12 +211,16 @@ describe(@"Cross-Thread functionality", ^{
             saveMoc]
             subscribeNext:^(id x) {
             }];
-        [ctx.rcd_merged subscribeNext:^(NSNotification *note){
-            completed = YES;
+        id d2 = [ctx.rcd_merged subscribeNext:^(NSNotification *note){
+            local_completed = YES;
             expect([note userInfo][NSInsertedObjectsKey]).to.haveCountOf(1);
+            NSLog(@"DONE2");
             done();
         }];
-        expect(completed).will.beTruthy();
+        expect(local_completed).will.beTruthy();
+        expect(d1).toNot.beNil();
+        expect(d2).toNot.beNil();
+        NSLog(@"End2");
     });
 });
 

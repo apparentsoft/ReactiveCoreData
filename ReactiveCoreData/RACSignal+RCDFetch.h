@@ -36,5 +36,12 @@
 // Create a "%K == %@" predicate with key and value as arguments
 - (instancetype)where:(id)key equals:(id)value;
 
+// modifies the NSFetchRequest to set passed-in limit
+- (instancetype)limit:(id)limitOrSignal;
+
+// Saves current NSManagedObjectContext and waits for it to merge
+//
+// Send an error if couldn't save
+// Passes next from previous subscriber on to the next one
 - (instancetype)saveMoc;
 @end
