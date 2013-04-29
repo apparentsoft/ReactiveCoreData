@@ -7,6 +7,7 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <objc/runtime.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
@@ -63,6 +64,7 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 {
     if (note.object == self) return;
     [self performSelector:@selector(mergeChangesFromContextDidSaveNotification:) onThread:[NSThread mainThread] withObject:note waitUntilDone:YES];
+    [((RACSubject *) self.rcd_merged) sendNext:note];
 }
 
 + (void)setMainContext:(NSManagedObjectContext *)moc;
@@ -85,6 +87,16 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
         threadDictionary[kRCDCurrentManagedObjectContext] = moc;
     }
     return moc;
+}
+
+- (RACSignal *)rcd_merged;
+{
+    RACSubject *merged = objc_getAssociatedObject(self, _cmd);
+    if (!merged) {
+        merged = [RACSubject subject];
+        objc_setAssociatedObject(self, _cmd, merged, OBJC_ASSOCIATION_RETAIN);
+    }
+    return merged;
 }
 
 

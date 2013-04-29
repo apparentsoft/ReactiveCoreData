@@ -135,7 +135,7 @@ describe(@"Cross-Thread functionality", ^{
         expect(checked).will.beTruthy();
     });
 
-    it(@"Merges changes from background context", ^{
+    it(@"Merges changes from background context", ^AsyncBlock{
         __block BOOL completed = NO;
         [[[[[[RACSignal return:@"empty"]
             deliverOn:[RACScheduler scheduler]]
@@ -150,8 +150,27 @@ describe(@"Cross-Thread functionality", ^{
                     subscribeNext:^(NSArray *result) {
                         expect([[result lastObject] name]).to.equal(@"Dad");
                         completed = YES;
+                        done();
                     }];
             }];
+        expect(completed).will.beTruthy();
+    });
+
+    it(@"Has a signal that posts after a merge", ^AsyncBlock{
+        __block BOOL completed = NO;
+        [[[[[RACSignal return:@"empty"]
+            deliverOn:[RACScheduler scheduler]]
+            doNext:^(id _){
+                [Parent insert];
+            }]
+            saveMoc]
+            subscribeNext:^(id x) {
+            }];
+        [ctx.rcd_merged subscribeNext:^(NSNotification *note){
+            completed = YES;
+            expect([note userInfo][NSInsertedObjectsKey]).to.haveCountOf(1);
+            done();
+        }];
         expect(completed).will.beTruthy();
     });
 });
