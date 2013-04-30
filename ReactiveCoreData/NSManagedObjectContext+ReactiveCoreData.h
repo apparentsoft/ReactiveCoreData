@@ -21,6 +21,7 @@ static NSString const *kRCDMainManagedObjectContext;
 - (RACSignal *)executeRequest:(NSFetchRequest *)request;
 - (RACSignal *)countRequest:(NSFetchRequest *)request;
 + (NSManagedObjectContext *)context;
+- (RACSignal *)perform;
 + (void)setMainContext:(NSManagedObjectContext *)moc;
 + (NSManagedObjectContext *)currentMoc;
 @end

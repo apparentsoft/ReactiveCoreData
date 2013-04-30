@@ -75,6 +75,16 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
     [((RACSubject *) mainContext.rcd_merged) sendNext:note];
 }
 
++ (void)setCurrentContext:(NSManagedObjectContext *)moc;
+{
+    if (moc) {
+        [NSThread currentThread].threadDictionary[kRCDCurrentManagedObjectContext] = moc;
+    }
+    else {
+        [[NSThread currentThread].threadDictionary removeObjectForKey:kRCDCurrentManagedObjectContext];
+    }
+}
+
 + (void)setMainContext:(NSManagedObjectContext *)moc;
 {
     if (moc) {
@@ -119,4 +129,15 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 }
 
 
+- (RACSignal *)perform;
+{
+    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+        NSManagedObjectContext *oldContext = [NSManagedObjectContext currentMoc];
+        [NSManagedObjectContext setCurrentContext:self];
+        [subscriber sendNext:self];
+        [subscriber sendCompleted];
+        [NSManagedObjectContext setCurrentContext:oldContext];
+        return nil;
+    }];
+}
 @end

@@ -15,7 +15,7 @@
 #import "Parent.h"
 #import "RACSignal+RCDFetch.h"
 
-NSManagedObjectContext * contextForTest()
+NSManagedObjectContext * contextForTest(BOOL setAsMain)
 {
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel mergedModelFromBundles:nil]];
     NSError *error = nil;
@@ -27,7 +27,9 @@ NSManagedObjectContext * contextForTest()
     NSManagedObjectContext *ctx = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     [ctx setPersistentStoreCoordinator:psc];
     [ctx setUndoManager:nil];
-    [NSManagedObjectContext setMainContext:ctx];
+    if (setAsMain) {
+        [NSManagedObjectContext setMainContext:ctx];
+    }
     [ctx save:NULL];
     return ctx;
 }
@@ -38,7 +40,7 @@ __block NSManagedObjectContext *ctx = nil;
 __block BOOL completed = NO;
 
 beforeEach(^{
-    ctx = contextForTest();
+    ctx = contextForTest(YES);
     completed = NO;
 });
 
@@ -175,6 +177,7 @@ describe(@"Cross-Thread functionality", ^{
             deliverOn:[RACScheduler scheduler]]
             subscribeCompleted:^{
                 NSManagedObjectContext *moc = [NSManagedObjectContext currentMoc];
+                NSLog(@"SCHEDULER: %@", [RACScheduler currentScheduler]);
                 expect(moc).toNot.equal(ctx);
                 completed = YES;
             }];
@@ -221,6 +224,68 @@ describe(@"Cross-Thread functionality", ^{
         expect(d1).toNot.beNil();
         expect(d2).toNot.beNil();
         NSLog(@"End2");
+    });
+});
+
+describe(@"Document-based contexts", ^{
+    __block NSManagedObjectContext *doc1ctx = nil;
+    __block NSManagedObjectContext *doc2ctx = nil;
+
+    beforeEach(^{
+        doc1ctx = contextForTest(NO);
+        doc2ctx = contextForTest(NO);
+    });
+
+    it(@"can perform on specific context", ^{
+        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        [[doc1ctx perform]
+            subscribeNext:^(NSManagedObjectContext *context1) {
+                expect(context1).to.equal(doc1ctx);
+                expect([NSManagedObjectContext currentMoc]).to.equal(doc1ctx);
+                completed = YES;
+            }];
+        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        expect(completed).to.beTruthy();
+    });
+
+    it(@"can perform on two specific contexts", ^{
+        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        [[[doc1ctx perform]
+            doNext:^(id _) {
+                Parent *dad = [Parent insert];
+                dad.name = @"dad";
+            }]
+            subscribeNext:^(NSManagedObjectContext *context1) {
+            }];
+
+        [[[doc2ctx perform]
+            doNext:^(id _) {
+                Parent *mom = [Parent insert];
+                mom.name = @"mom";
+            }]
+            subscribeNext:^(NSManagedObjectContext *context1) {
+            }];
+        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        NSFetchRequest *req1 = [NSFetchRequest fetchRequestWithEntityName:[Parent entityName]];
+        NSFetchRequest *req2 = [NSFetchRequest fetchRequestWithEntityName:[Parent entityName]];
+        NSArray *parents1 = [doc1ctx executeFetchRequest:req1 error:NULL];
+        NSArray *parents2 = [doc2ctx executeFetchRequest:req2 error:NULL];
+        expect([parents1.lastObject name]).to.equal(@"dad");
+        expect([parents2.lastObject name]).to.equal(@"mom");
+    });
+
+    it(@"deallocate the perform chain", ^{
+        __block BOOL deallocated = NO;
+        @autoreleasepool {
+            RACDisposable *disposable __attribute__((objc_precise_lifetime)) = [[doc1ctx perform]
+            subscribeNext:^(NSManagedObjectContext *context1) {
+                expect(deallocated).to.beFalsy();
+            }];
+        [disposable rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
+            deallocated = YES;
+        }]];
+        }
+        expect(deallocated).to.beTruthy();
     });
 });
 
