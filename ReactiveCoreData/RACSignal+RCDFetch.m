@@ -26,12 +26,14 @@
 
 - (instancetype)fetch;
 {
-    return [self fetchInMOC:[NSManagedObjectContext currentMoc]];
+
+    NSManagedObjectContext *currentMoc = [NSManagedObjectContext currentContext];
+    return [self fetchInMOC:currentMoc];
 }
 
 - (instancetype)count;
 {
-    return [self countInMOC:[NSManagedObjectContext currentMoc]];
+    return [self countInMOC:[NSManagedObjectContext currentContext]];
 }
 
 #pragma mark - Operations modifying NSFetchRequest
@@ -73,7 +75,7 @@
         return [self
             subscribeNext:^(id x) {
                 NSError *error = nil;
-                BOOL success = [[NSManagedObjectContext currentMoc] save:&error];
+                BOOL success = [[NSManagedObjectContext currentContext] save:&error];
                 if (!success) {
                     [subscriber sendError:error];
                 }
@@ -88,5 +90,33 @@
                 [subscriber sendCompleted];
             }];
     }] setNameWithFormat:@"[%@] -saveMoc", self.name];
+}
+
+- (RACSignal *)performInBackgroundContext;
+{
+    RACScheduler *scheduler = [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.ReactiveCoreData.background"];
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext currentContext];
+//    NSLog(@"PERFORM IN BACKGROUND: current MOC: %@", currentContext);
+    return [[RACSignal createSignal:^(id<RACSubscriber> subscriber) {
+        return [self subscribeNext:^(id x) {
+            [scheduler schedule:^{
+                NSManagedObjectContext *childContext = [NSManagedObjectContext currentContext];
+//                NSLog(@"PERFORM IN BACKGROUND: Child MOC: %@", childContext);
+                if (!childContext) {
+                    childContext = [NSManagedObjectContext contextWithMainContext:currentContext];
+                }
+                [childContext attachToCurrentScheduler];
+                [subscriber sendNext:x];
+            }];
+        } error:^(NSError *error) {
+            [scheduler schedule:^{
+                [subscriber sendError:error];
+            }];
+        } completed:^{
+            [scheduler schedule:^{
+                [subscriber sendCompleted];
+            }];
+        }];
+    }] setNameWithFormat:@"[%@] -performInBackgroundContext", self.name];
 }
 @end

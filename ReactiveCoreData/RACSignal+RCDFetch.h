@@ -44,4 +44,5 @@
 // Send an error if couldn't save
 // Passes next from previous subscriber on to the next one
 - (instancetype)saveMoc;
+- (RACSignal *)performInBackgroundContext;
 @end

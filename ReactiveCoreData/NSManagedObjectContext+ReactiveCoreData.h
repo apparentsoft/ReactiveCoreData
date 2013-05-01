@@ -23,5 +23,9 @@ static NSString const *kRCDMainManagedObjectContext;
 + (NSManagedObjectContext *)context;
 - (RACSignal *)perform;
 + (void)setMainContext:(NSManagedObjectContext *)moc;
-+ (NSManagedObjectContext *)currentMoc;
++ (NSManagedObjectContext *)currentContext;
+- (void)attachToCurrentScheduler;
+- (NSManagedObjectContext *)mainContext;
++ (NSManagedObjectContext *)currentContext;
++ (NSManagedObjectContext *)contextWithMainContext:(NSManagedObjectContext *)mainContext;
 @end

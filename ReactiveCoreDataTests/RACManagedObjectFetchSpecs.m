@@ -174,10 +174,9 @@ describe(@"FetchRequest operations:", ^{
 describe(@"Cross-Thread functionality", ^{
     it(@"Creates a new background context", ^{
         [[[RACSignal empty]
-            deliverOn:[RACScheduler scheduler]]
+            performInBackgroundContext]
             subscribeCompleted:^{
-                NSManagedObjectContext *moc = [NSManagedObjectContext currentMoc];
-                NSLog(@"SCHEDULER: %@", [RACScheduler currentScheduler]);
+                NSManagedObjectContext *moc = [NSManagedObjectContext currentContext];
                 expect(moc).toNot.equal(ctx);
                 completed = YES;
             }];
@@ -186,7 +185,7 @@ describe(@"Cross-Thread functionality", ^{
 
     it(@"Merges changes from background context", ^AsyncBlock{
         [[[[[[RACSignal return:@"empty"]
-            deliverOn:[RACScheduler scheduler]]
+            performInBackgroundContext]
             doNext:^(id _){
                 Parent *dad = [Parent insert];
                 dad.name = @"Dad";
@@ -207,7 +206,7 @@ describe(@"Cross-Thread functionality", ^{
     it(@"Has a signal that posts after a merge", ^AsyncBlock{
         __block BOOL local_completed = NO;
         id d1 = [[[[[RACSignal return:@"empty"]
-            deliverOn:[RACScheduler scheduler]]
+            performInBackgroundContext]
             doNext:^(id _){
                 [Parent insert];
             }]
@@ -217,13 +216,11 @@ describe(@"Cross-Thread functionality", ^{
         id d2 = [ctx.rcd_merged subscribeNext:^(NSNotification *note){
             local_completed = YES;
             expect([note userInfo][NSInsertedObjectsKey]).to.haveCountOf(1);
-            NSLog(@"DONE2");
             done();
         }];
         expect(local_completed).will.beTruthy();
         expect(d1).toNot.beNil();
         expect(d2).toNot.beNil();
-        NSLog(@"End2");
     });
 });
 
@@ -237,19 +234,19 @@ describe(@"Document-based contexts", ^{
     });
 
     it(@"can perform on specific context", ^{
-        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        expect([NSManagedObjectContext currentContext]).to.equal(ctx);
         [[doc1ctx perform]
             subscribeNext:^(NSManagedObjectContext *context1) {
                 expect(context1).to.equal(doc1ctx);
-                expect([NSManagedObjectContext currentMoc]).to.equal(doc1ctx);
+                expect([NSManagedObjectContext currentContext]).to.equal(doc1ctx);
                 completed = YES;
             }];
-        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        expect([NSManagedObjectContext currentContext]).to.equal(ctx);
         expect(completed).to.beTruthy();
     });
 
     it(@"can perform on two specific contexts", ^{
-        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        expect([NSManagedObjectContext currentContext]).to.equal(ctx);
         [[[doc1ctx perform]
             doNext:^(id _) {
                 Parent *dad = [Parent insert];
@@ -265,7 +262,7 @@ describe(@"Document-based contexts", ^{
             }]
             subscribeNext:^(NSManagedObjectContext *context1) {
             }];
-        expect([NSManagedObjectContext currentMoc]).to.equal(ctx);
+        expect([NSManagedObjectContext currentContext]).to.equal(ctx);
         NSFetchRequest *req1 = [NSFetchRequest fetchRequestWithEntityName:[Parent entityName]];
         NSFetchRequest *req2 = [NSFetchRequest fetchRequestWithEntityName:[Parent entityName]];
         NSArray *parents1 = [doc1ctx executeFetchRequest:req1 error:NULL];
@@ -277,7 +274,7 @@ describe(@"Document-based contexts", ^{
     it(@"deallocate the perform chain", ^{
         __block BOOL deallocated = NO;
         @autoreleasepool {
-            RACDisposable *disposable __attribute__((objc_precise_lifetime)) = [[doc1ctx perform]
+            RACDisposable *disposable  = [[doc1ctx perform]
             subscribeNext:^(NSManagedObjectContext *context1) {
                 expect(deallocated).to.beFalsy();
             }];
@@ -286,6 +283,32 @@ describe(@"Document-based contexts", ^{
         }]];
         }
         expect(deallocated).to.beTruthy();
+    });
+
+    it(@"creates a child of a document context", ^AsyncBlock{
+        NSMutableDictionary *expected = [[NSMutableDictionary alloc] initWithCapacity:5];
+        [[[[[doc1ctx perform]
+            doNext:^(id x) {
+                Parent *dad = [Parent insert];
+                dad.name = @"dad";
+            }]
+            saveMoc]
+            performInBackgroundContext]
+            subscribeNext:^(id x){
+                NSManagedObjectContext *currentContext = [NSManagedObjectContext currentContext];
+                [expected setValue:currentContext forKey:@"context"];
+                [expected setValue:[currentContext mainContext] forKey:@"mainContext"];
+                [[[Parent findAll] fetch]
+                    subscribeNext:^(NSArray *result) {
+                        [expected setValue:result forKey:@"result"];
+                        done();
+                    }];
+            }];
+        expect(expected[@"context"]).willNot.beNil();
+        expect(expected[@"mainContext"]).will.equal(doc1ctx);
+        NSArray *result = expected[@"result"];
+        expect(result).will.haveCountOf(1);
+        expect([[result lastObject] name]).will.equal(@"dad");
     });
 });
 

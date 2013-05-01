@@ -48,71 +48,46 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 
 + (NSManagedObjectContext *)context;
 {
-    NSManagedObjectContext *moc = [[self alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
-    NSManagedObjectContext *mainContext = [self mainMoc];
-    if (mainContext) {
-        moc.userInfo[kRCDMainManagedObjectContext] = mainContext;
-        moc.persistentStoreCoordinator = mainContext.persistentStoreCoordinator;
-    }
-    [NSNotificationCenter.defaultCenter addObserver:moc selector:@selector(rcd_mergeChanges:) name:NSManagedObjectContextDidSaveNotification object:moc];
-    [moc rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
-        [NSNotificationCenter.defaultCenter removeObserver:moc name:NSManagedObjectContextDidSaveNotification object:moc];
-    }]];
-    return moc;
+    NSManagedObjectContext *mainContext = [self currentContext];
+    NSAssert(mainContext, @"No Main context");
+    return [self contextWithMainContext:mainContext];
 }
 
 + (NSManagedObjectContext *)mainMoc;
 {
-    return [NSThread mainThread].threadDictionary[kRCDMainManagedObjectContext];
+    return [self contextForScheduler:[RACScheduler mainThreadScheduler]];
+
 }
 
 - (void)rcd_mergeChanges:(NSNotification *)note;
 {
-    NSManagedObjectContext *mainContext = self.userInfo[kRCDMainManagedObjectContext];
+    NSManagedObjectContext *mainContext = [self mainContext];
     NSAssert(mainContext, @"no main context");
-    NSAssert(mainContext == [NSManagedObjectContext mainMoc], @"main context (%@) is not as expected (%@)", mainContext, [NSManagedObjectContext mainMoc]);
     [mainContext performSelector:@selector(mergeChangesFromContextDidSaveNotification:) onThread:[NSThread mainThread] withObject:note waitUntilDone:YES];
     [((RACSubject *) mainContext.rcd_merged) sendNext:note];
 }
 
 + (void)setCurrentContext:(NSManagedObjectContext *)moc;
 {
-    if (moc) {
-        [NSThread currentThread].threadDictionary[kRCDCurrentManagedObjectContext] = moc;
-    }
-    else {
-        [[NSThread currentThread].threadDictionary removeObjectForKey:kRCDCurrentManagedObjectContext];
-    }
+    [moc attachToCurrentScheduler];
 }
 
 + (void)setMainContext:(NSManagedObjectContext *)moc;
 {
-    if (moc) {
-        [NSThread mainThread].threadDictionary[kRCDMainManagedObjectContext] = moc;
-        [NSThread mainThread].threadDictionary[kRCDCurrentManagedObjectContext] = moc;
-    }
-    else {
-        [[NSThread mainThread].threadDictionary removeObjectForKey:kRCDMainManagedObjectContext];
-        [[NSThread mainThread].threadDictionary removeObjectForKey:kRCDCurrentManagedObjectContext];
-    }
+    RACScheduler *scheduler = [RACScheduler mainThreadScheduler];
+    objc_setAssociatedObject(scheduler, (__bridge void *)kRCDCurrentManagedObjectContext, self, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self setCurrentContext:moc];
 }
 
-+ (NSManagedObjectContext *)currentMoc;
++ (NSManagedObjectContext *)currentContext;
 {
-    NSMutableDictionary *threadDictionary = [NSThread.currentThread threadDictionary];
-    NSManagedObjectContext *moc = threadDictionary[kRCDCurrentManagedObjectContext];
-    id mocMain = moc.userInfo[kRCDMainManagedObjectContext];
-    // Prevent a case when main context was switched, in the meantime
-    // This has so far happened in the test but could happen
-    if (moc && mocMain != nil && mocMain != [self mainMoc]) {
-        [threadDictionary removeObjectForKey:kRCDCurrentManagedObjectContext];
-        moc = nil;
-    }
-    if (!moc) {
-        moc = [NSManagedObjectContext context];
-        threadDictionary[kRCDCurrentManagedObjectContext] = moc;
-    }
-    return moc;
+    return [self contextForScheduler:[RACScheduler currentScheduler]];
+}
+
++ (NSManagedObjectContext *)contextForScheduler:(RACScheduler *)scheduler;
+{
+    NSManagedObjectContext *schedulerContext = objc_getAssociatedObject(scheduler, (__bridge void *)kRCDCurrentManagedObjectContext);
+    return schedulerContext;
 }
 
 - (RACSignal *)rcd_merged;
@@ -128,16 +103,43 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
     return merged;
 }
 
+- (NSManagedObjectContext *)mainContext
+{
+    return self.userInfo[kRCDMainManagedObjectContext];
+}
+
++ (NSManagedObjectContext *)contextWithMainContext:(NSManagedObjectContext *)mainContext;
+{
+    NSParameterAssert(mainContext);
+    NSManagedObjectContext *moc = [[self alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+    moc.userInfo[kRCDMainManagedObjectContext] = mainContext;
+    moc.persistentStoreCoordinator = mainContext.persistentStoreCoordinator;
+
+    [NSNotificationCenter.defaultCenter addObserver:moc selector:@selector(rcd_mergeChanges:) name:NSManagedObjectContextDidSaveNotification object:moc];
+    [moc rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
+        [NSNotificationCenter.defaultCenter removeObserver:moc name:NSManagedObjectContextDidSaveNotification object:moc];
+    }]];
+
+//    NSLog(@"Creating a NEW CHILD MOC (%@) with main MOC:%@", moc, mainContext);
+    return moc;
+}
+
 
 - (RACSignal *)perform;
 {
+    NSManagedObjectContext *oldContext = [NSManagedObjectContext currentContext];
+    [NSManagedObjectContext setCurrentContext:self];
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        NSManagedObjectContext *oldContext = [NSManagedObjectContext currentMoc];
-        [NSManagedObjectContext setCurrentContext:self];
         [subscriber sendNext:self];
         [subscriber sendCompleted];
         [NSManagedObjectContext setCurrentContext:oldContext];
         return nil;
     }];
+}
+
+- (void)attachToCurrentScheduler;
+{
+    RACScheduler *scheduler = [RACScheduler currentScheduler];
+    objc_setAssociatedObject(scheduler, (__bridge void *)kRCDCurrentManagedObjectContext, self, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 @end

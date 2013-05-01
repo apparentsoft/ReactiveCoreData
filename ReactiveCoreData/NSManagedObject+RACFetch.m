@@ -29,7 +29,7 @@
 
 + (instancetype)insert;
 {
-    return [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[NSManagedObjectContext currentMoc]];
+    return [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[NSManagedObjectContext currentContext]];
 }
 
 
