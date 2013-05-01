@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import <ReactiveCocoa/EXTScope.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
+#import "RACSignal+RCDFetch.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
 static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectContext";
@@ -48,15 +49,12 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 
 + (NSManagedObjectContext *)context;
 {
-    NSManagedObjectContext *mainContext = [self currentContext];
-    NSAssert(mainContext, @"No Main context");
-    return [self contextWithMainContext:mainContext];
+    return [self contextWithMainContext:[self currentContext]];
 }
 
 + (NSManagedObjectContext *)mainMoc;
 {
     return [self contextForScheduler:[RACScheduler mainThreadScheduler]];
-
 }
 
 - (void)rcd_mergeChanges:(NSNotification *)note;
@@ -141,5 +139,10 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
 {
     RACScheduler *scheduler = [RACScheduler currentScheduler];
     objc_setAssociatedObject(scheduler, (__bridge void *)kRCDCurrentManagedObjectContext, self, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (RACSignal *)performInBackground;
+{
+    return [[self perform] performInBackgroundContext];
 }
 @end

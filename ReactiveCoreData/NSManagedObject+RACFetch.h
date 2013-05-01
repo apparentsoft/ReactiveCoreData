@@ -20,5 +20,7 @@
 // By default returns class name string (which works well for XCode generated subclasses)
 // mogenerator also defines such a method in its private subclass interface, so it'll override this one
 + (NSString*)entityName;
+
+// Inserts a new object in the current context and returns it
 + (instancetype)insert;
 @end

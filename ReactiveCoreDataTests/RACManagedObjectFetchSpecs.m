@@ -310,6 +310,16 @@ describe(@"Document-based contexts", ^{
         expect(result).will.haveCountOf(1);
         expect([[result lastObject] name]).will.equal(@"dad");
     });
+
+    it(@"has performInBackground for context instance", ^AsyncBlock {
+        __block NSManagedObjectContext *actualMain;
+        [[doc1ctx performInBackground]
+            subscribeNext:^(id x) {
+                actualMain = [[NSManagedObjectContext currentContext] mainContext];
+                done();
+            }];
+        expect(actualMain).will.equal(doc1ctx);
+    });
 });
 
 SpecEnd

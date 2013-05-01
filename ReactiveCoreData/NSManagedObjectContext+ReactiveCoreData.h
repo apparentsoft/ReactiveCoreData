@@ -19,13 +19,37 @@ static NSString const *kRCDMainManagedObjectContext;
 
 // Returns a signal that sends result of executing a fetch request (or sends error)
 - (RACSignal *)executeRequest:(NSFetchRequest *)request;
+
+// Returns a signal that sends result of executing a count of the fetch request (or sends error)
 - (RACSignal *)countRequest:(NSFetchRequest *)request;
+
+// Creates a new context based on the current context
 + (NSManagedObjectContext *)context;
+
+// Set self as current context and starts a signal
+//
+// Passes self as signal's value
+// This is needed when you have contexts per-document
+// and need to perform operations in a specific context
+// Probably only works well on the main thread
 - (RACSignal *)perform;
+
+// Sets `moc` as the current context for the main scheduler and sets it as current context
+// This is mostly needed for shoebox-type apps
 + (void)setMainContext:(NSManagedObjectContext *)moc;
+
+// Returns the context registered with current RACScheduler
 + (NSManagedObjectContext *)currentContext;
+
+// Attaches self to the current scheduler
 - (void)attachToCurrentScheduler;
+
+// returns the context that self merges into
 - (NSManagedObjectContext *)mainContext;
-+ (NSManagedObjectContext *)currentContext;
+
+// Convenience method for shoebox contexts to start perform in the background right away
+- (RACSignal *)performInBackground;
+
+// Actually creates a new child context for the passed main context
 + (NSManagedObjectContext *)contextWithMainContext:(NSManagedObjectContext *)mainContext;
 @end
