@@ -132,4 +132,13 @@
         }];
     }] setNameWithFormat:@"[%@] -performInBackgroundContext", self.name];
 }
+
+- (RACSignal *)fetchWithTrigger:(RACSignal *)triggerSignal;
+{
+    return [[[self combineLatestWith:triggerSignal]
+        map:^(RACTuple *tuple) {
+            return [tuple first];
+        }]
+        fetch];
+}
 @end

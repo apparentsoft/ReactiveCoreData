@@ -115,6 +115,22 @@ describe(@"RACSignal", ^{
         expect(result).to.contain(p1);
         expect(result).to.contain(p2);
     });
+
+    it(@"fetches with trigger", ^{
+        [Parent insert];
+        RACSubject *trigger = [RACSubject subject];
+        __block NSArray *actual;
+        [[[[Parent findOne] fetchWithTrigger:trigger] collect]
+            subscribeNext:^(id x) {
+                actual = x;
+                completed = YES;
+            }];
+        [trigger sendNext:@1];
+        [trigger sendNext:@1];
+        [trigger sendCompleted];
+        expect(completed).to.beTruthy();
+        expect(actual).to.haveCountOf(2);
+    });
 });
 
 describe(@"FetchRequest operations:", ^{
@@ -314,7 +330,8 @@ describe(@"Document-based contexts", ^{
         expect(deallocated).to.beTruthy();
     });
 
-    it(@"creates a child of a document context", ^AsyncBlock{
+    it(@"creates a child of a document context", ^{
+        __block volatile uint32_t done = 0;
         NSMutableDictionary *expected = [[NSMutableDictionary alloc] initWithCapacity:5];
         [[[[[doc1ctx perform]
             doNext:^(id x) {
@@ -330,14 +347,15 @@ describe(@"Document-based contexts", ^{
                 [[[Parent findAll] fetch]
                     subscribeNext:^(NSArray *result) {
                         [expected setValue:result forKey:@"result"];
-                        done();
+                        OSAtomicOr32Barrier(1, &done);
                     }];
             }];
-        expect(expected[@"context"]).willNot.beNil();
-        expect(expected[@"mainContext"]).will.equal(doc1ctx);
+        while (OSAtomicAnd32Barrier(1, &done) == 0) { usleep(10000);  };
+        expect(expected[@"context"]).toNot.beNil();
+        expect(expected[@"mainContext"]).to.equal(doc1ctx);
         NSArray *result = expected[@"result"];
-        expect(result).will.haveCountOf(1);
-        expect([[result lastObject] name]).will.equal(@"dad");
+        expect(result).to.haveCountOf(1);
+        expect([[result lastObject] name]).to.equal(@"dad");
     });
 
     it(@"has performInBackground for context instance", ^AsyncBlock {

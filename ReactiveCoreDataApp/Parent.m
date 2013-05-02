@@ -7,8 +7,6 @@
 //
 
 #import "Parent.h"
-#import "Parent.h"
-
 
 @implementation Parent
 
