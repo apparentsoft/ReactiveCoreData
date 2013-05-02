@@ -44,5 +44,14 @@
 // Send an error if couldn't save
 // Passes next from previous subscriber on to the next one
 - (instancetype)saveMoc;
+
+// Sets context as current context and return self
+//
+// Use it to start inserting document-based Core Data operations on the passed context
+- (RACSignal *)performInContext:(NSManagedObjectContext *)context;
+
+// Creates a new background scheduler and context.
+//
+// Sets the context as current for this scheduler and further chain runs on this scheduler
 - (RACSignal *)performInBackgroundContext;
 @end

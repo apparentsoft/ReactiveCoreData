@@ -92,6 +92,12 @@
     }] setNameWithFormat:@"[%@] -saveMoc", self.name];
 }
 
+- (RACSignal *)performInContext:(NSManagedObjectContext *)context
+{
+    [context attachToCurrentScheduler];
+    return self;
+}
+
 - (RACSignal *)performInBackgroundContext;
 {
     RACScheduler *scheduler = [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.ReactiveCoreData.background"];

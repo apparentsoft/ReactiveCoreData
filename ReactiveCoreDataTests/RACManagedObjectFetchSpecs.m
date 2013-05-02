@@ -320,6 +320,24 @@ describe(@"Document-based contexts", ^{
             }];
         expect(actualMain).will.equal(doc1ctx);
     });
+
+    it(@"has performInContext", ^{
+        [[[RACSignal return:@1]
+            performInContext:doc1ctx]
+            subscribeNext:^(id x) {
+                Parent *dad = [Parent insert];
+                dad.name = @"dad";
+            }];
+
+        __block NSArray *actual;
+        [[[Parent findAll] fetchInMOC:doc1ctx]
+            subscribeNext:^(NSArray *result) {
+                actual = result;
+            }];
+
+        expect(actual).to.haveCountOf(1);
+        expect([[actual lastObject] name]).to.equal(@"dad");
+    });
 });
 
 SpecEnd
