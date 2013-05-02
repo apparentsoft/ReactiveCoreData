@@ -15,6 +15,11 @@
 // Creates a signal that sends an NSFetchRequest for specified entity
 + (RACSignal *)findAll;
 
+// Creates a signal that sends a NSFetchRequest with fetchLimit of 1
+//
+// In the end, fetch will return only one object instead of arrays for such requests
++ (RACSignal *)findOne;
+
 // returns Entity name string
 //
 // By default returns class name string (which works well for XCode generated subclasses)

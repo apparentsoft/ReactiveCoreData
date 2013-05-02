@@ -9,6 +9,7 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "NSManagedObject+RACFetch.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
+#import "RACSignal+RCDFetch.h"
 
 @implementation NSManagedObject (RACFetch)
 
@@ -21,6 +22,16 @@
         return nil;
     }];
 }
+
++ (RACSignal *)findOne;
+{
+    return [[self findAll]
+        map:^id(NSFetchRequest *req) {
+            req.fetchLimit = 1;
+            return req;
+        }];
+}
+
 
 + (NSString *)entityName;
 {

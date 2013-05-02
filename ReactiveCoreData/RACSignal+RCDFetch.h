@@ -11,6 +11,9 @@
 @interface RACSignal (RCDFetch)
 
 // Execute the NSFetchRequest that's sent in next, in specified context
+//
+// If the fetch request fetchLimit is set to 1, the signal will carry the object itself
+// if fetchLimit != 1, then the signal will carry the resulting array
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 
 // Returns signal with the count of results that would've returned in `fetchInMOC:`

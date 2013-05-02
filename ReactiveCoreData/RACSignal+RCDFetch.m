@@ -13,7 +13,14 @@
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 {
     return [[self flattenMap:^RACStream *(NSFetchRequest *req) {
-        return [moc executeRequest:req];
+        if (req.fetchLimit == 1) {
+            return [[moc executeRequest:req] map:^id(id value) {
+                return [value lastObject];
+            }];
+        }
+        else {
+            return [moc executeRequest:req];
+        }
     }]  setNameWithFormat:@"[%@] -fetchInMOC:%@", self.name, moc];
 }
 

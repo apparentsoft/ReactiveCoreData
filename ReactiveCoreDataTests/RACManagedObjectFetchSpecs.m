@@ -80,6 +80,26 @@ describe(@"NSManagedObject", ^{
         expect(parent.name).to.equal(@"Daddy");
         expect(parent.age).to.equal(35);
     });
+
+    it(@"findOne's fetch passes nil for empty result", ^{
+        [[[Parent findOne] fetch] subscribeNext:^(Parent *parent) {
+            expect(parent).to.beNil();
+            completed = YES;
+        }];
+        expect(completed).equal(YES);
+    });
+
+    it(@"findOne's fetch passes object for non-empty result", ^{
+        [Parent insert:^(Parent *parent) {
+            parent.name = @"One";
+        }];
+
+        [[[Parent findOne] fetch] subscribeNext:^(Parent *parent) {
+            expect([parent name]).to.equal(@"One");
+            completed = YES;
+        }];
+        expect(completed).equal(YES);
+    });
 });
 
 describe(@"RACSignal", ^{
