@@ -23,4 +23,10 @@
 
 // Inserts a new object in the current context and returns it
 + (instancetype)insert;
+
+// Convenience method that for faster insertion with values
+//
+// Inserts a new object and passes it to the config block
+// Return the newly configured object
++ (instancetype)insert:(void (^)(id))configBlock;
 @end

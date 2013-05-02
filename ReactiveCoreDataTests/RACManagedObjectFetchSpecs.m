@@ -71,6 +71,15 @@ describe(@"NSManagedObject", ^{
         expect(parent).toNot.beNil();
         expect(parent.managedObjectContext).to.equal(ctx);
     });
+
+    it(@"inserts with config block", ^{
+        Parent *parent = [Parent insert:^(Parent *obj) {
+            obj.name = @"Daddy";
+            obj.age = 35;
+        }];
+        expect(parent.name).to.equal(@"Daddy");
+        expect(parent.age).to.equal(35);
+    });
 });
 
 describe(@"RACSignal", ^{

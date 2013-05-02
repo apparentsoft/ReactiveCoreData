@@ -32,5 +32,11 @@
     return [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[NSManagedObjectContext currentContext]];
 }
 
++ (instancetype)insert:(void (^)(id obj))configBlock;
+{
+    id object = [self insert];
+    configBlock(object);
+    return object;
+}
 
 @end
