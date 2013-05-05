@@ -50,7 +50,17 @@
             }]];
     }];
 
-    self.removeButton.rac_command = [RACCommand command];
+    // Basically, implement a delegate method in a signal
+    RACSignal *aParentIsSelected = [[self rac_signalForSelector:@selector(tableViewSelectionDidChange:)]
+                                    map:^(id x) {
+                                        return @(self.tableView.numberOfSelectedRows);
+                                    }];
+
+    // Add it after the selector above is used, so that it gets called
+    // Otherwise, need to subscribe to NSTableViewSelectionDidChangeNotification manually
+    self.tableView.delegate = self;
+
+    self.removeButton.rac_command = [RACCommand commandWithCanExecuteSignal:aParentIsSelected];
 
     // Pretty straight-forward removal
     // I'd even say unnecessary long with the return of signal in addSignalBlock:
@@ -92,6 +102,9 @@
                 return [Parent findAll];
         }]
         fetchWithTrigger:objectsChanged];
+
+    // select the first row in the table
+    [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
 }
 
 
