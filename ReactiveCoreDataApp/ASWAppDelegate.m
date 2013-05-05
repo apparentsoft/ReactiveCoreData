@@ -6,18 +6,128 @@
 //  Copyright (c) 2013 Apparent Software. All rights reserved.
 //
 
+#import <ReactiveCocoa/ReactiveCocoa.h>
 #import "ASWAppDelegate.h"
+#import "ReactiveCoreData.h"
+#import "Parent.h"
+
+@interface ASWAppDelegate ()
+@property (weak) IBOutlet NSButton *addButton;
+@property (weak) IBOutlet NSButton *removeButton;
+@property (weak) IBOutlet NSSearchField *searchField;
+@property (weak) IBOutlet NSTableView *tableView;
+
+@property (strong) NSArray *filteredParents;
+
+@end
 
 @implementation ASWAppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    // Need to do this for automatic detection of context
+    [NSManagedObjectContext setMainContext:[self managedObjectContext]];
+
+    // Using RACCommand instead of target/action
+    self.addButton.rac_command = [RACCommand command];
+
+    // The signal holds the newly inserted parent, though we don't use it later.
+    RACSignal *addedParent = [self.addButton.rac_command addSignalBlock:^(id _) {
+        self.searchField.stringValue = @""; // reset search field on add
+
+        // insert a new parent and set its default values
+        // Of course, it might be better to do this in the model class itself
+        // but it gives an example of using ReactiveCoreData
+        return [RACSignal return:
+            [Parent insert:^(Parent *parent) {
+                parent.name = @"No name";
+                parent.age = 40;
+            }]];
+    }];
+
+    self.removeButton.rac_command = [RACCommand command];
+
+    // Pretty straight-forward removal
+    // I'd even say unnecessary long with the return of signal in addSignalBlock:
+    // The good about having it a signal is that we can chain it later to react to deletion
+    // See how this affects objectsChanged.
+    RACSignal *removedParent = [self.removeButton.rac_command addSignalBlock:^(id _) {
+        NSArray *objectsToRemove = [self.filteredParents objectsAtIndexes:self.tableView.selectedRowIndexes];
+        NSManagedObjectContext *context = [NSManagedObjectContext currentContext];
+        for (NSManagedObject *obj in objectsToRemove) {
+            [context deleteObject:obj];
+        }
+        return [RACSignal return:@YES];
+    }];
+
+    // reload the data after filteredParents is updated
+    [RACAble(self.filteredParents) subscribeNext:^(id x) {
+        [self.tableView reloadData];
+    }];
+
+    // we use this later to trigger refetch of the table
+    // startWith is needed for the initial trigger on launch
+    RACSignal *objectsChanged = [[RACSignal merge:@[addedParent, removedParent]] startWith:@YES];
+
+    // filterText will send next when the text in searchField changes either by user edit or direct update by us.
+    RACSignal *filterText = [[RACSignal
+        merge:@[self.searchField.rac_textSignal, RACAbleWithStart(self.searchField.stringValue)]]
+        map:^id(id value) {
+            return [value copy]; // just in case
+        }];
+
+    // This part refetches data for the table and puts it into filteredParents
+    // It either fetches all Parents or filters by name, if there's something in the search field
+    // It will also refetch, if objectsChanged send a next
+    RAC(self.filteredParents) = [[filterText
+        flattenMap:^(NSString *filter) {
+            if ([filter length] > 0)
+                return [[Parent findAll] where:@"name contains[cd] %@" args:@[filter]];
+            else
+                return [Parent findAll];
+        }]
+        fetchWithTrigger:objectsChanged];
 }
+
+
+#pragma mark - NSTableView related
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
+{
+    return [self.filteredParents count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
+{
+    if (row < 0) return nil;
+    NSUInteger r = (NSUInteger) row;
+
+    if ([[tableColumn identifier] isEqualToString:@"Name"]) {
+        return [self.filteredParents[r] name];
+    }
+    return @([self.filteredParents[r] age]);
+}
+
+- (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row;
+{
+    if (row < 0) return;
+    Parent *parent = self.filteredParents[(NSUInteger) row];
+    if ([tableColumn.identifier isEqualToString:@"Name"]) {
+        parent.name = object;
+    }
+    else {
+        parent.age = [object integerValue];
+    }
+}
+
+
+
+
+#pragma mark - Boilerplate
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.apparentsoft.ReactiveCoreData" in the user's Application Support directory.
 - (NSURL *)applicationFilesDirectory

@@ -17,14 +17,15 @@
 		166738891729695E00CABF2C /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738881729695E00CABF2C /* SenTestingKit.framework */; };
 		1667388A1729695E00CABF2C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738671729695E00CABF2C /* Cocoa.framework */; };
 		166738921729695E00CABF2C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 166738901729695E00CABF2C /* InfoPlist.strings */; };
-		166738AE17296D3800CABF2C /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
-		166738B017296D5400CABF2C /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
-		166738BA17296FBE00CABF2C /* NSManagedObject+RACFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */; };
 		166738BD1729700300CABF2C /* RACManagedObjectFetchSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738BC1729700300CABF2C /* RACManagedObjectFetchSpecs.m */; };
-		16AF98F917297EBF000E9B8B /* RACSignal+RCDFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */; };
+		1690734817332229007186EE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1667386B1729695E00CABF2C /* CoreData.framework */; };
+		1690735117339D3E007186EE /* NSManagedObject+RACFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */; };
+		1690735217339D3E007186EE /* RACSignal+RCDFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */; };
+		1690735317339D3E007186EE /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
+		1690735417339D4B007186EE /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
+		1690735517339D68007186EE /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 		16BE18E71729788E00096F6C /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18CD1729786400096F6C /* libExpecta.a */; };
 		16BE18E81729788E00096F6C /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BE18DE1729787F00096F6C /* libSpecta.a */; };
-		16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
 		16CEF48E172ACD7500921072 /* Parent.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF48D172ACD7500921072 /* Parent.m */; };
 		16CEF49C172D2A1100921072 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 		16CEF49F172D2A2800921072 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
@@ -59,7 +60,7 @@
 			remoteGlobalIDString = 88CDF7DC15000FCF00163A9F;
 			remoteInfo = ReactiveCocoaTests;
 		};
-		166738B117296D9000CABF2C /* PBXContainerItemProxy */ = {
+		1690735617339D6C007186EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 166738A017296D0200CABF2C /* ReactiveCocoa.xcodeproj */;
 			proxyType = 1;
@@ -152,7 +153,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				166738B017296D5400CABF2C /* ReactiveCocoa.framework in CopyFiles */,
+				1690735517339D68007186EE /* ReactiveCocoa.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +170,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1637E1D817328BEA0095B22B /* ReactiveCoreData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactiveCoreData.h; sourceTree = "<group>"; };
 		166738641729695E00CABF2C /* ReactiveCoreData.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReactiveCoreData.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		166738671729695E00CABF2C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1667386A1729695E00CABF2C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -206,7 +208,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				166738AE17296D3800CABF2C /* ReactiveCocoa.framework in Frameworks */,
+				1690735417339D4B007186EE /* ReactiveCocoa.framework in Frameworks */,
+				1690734817332229007186EE /* CoreData.framework in Frameworks */,
 				166738681729695E00CABF2C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,6 +326,7 @@
 				16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */,
 				16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */,
 				16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */,
+				1637E1D817328BEA0095B22B /* ReactiveCoreData.h */,
 			);
 			path = ReactiveCoreData;
 			sourceTree = "<group>";
@@ -381,7 +385,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				166738B217296D9000CABF2C /* PBXTargetDependency */,
+				1690735717339D6C007186EE /* PBXTargetDependency */,
 			);
 			name = ReactiveCoreData;
 			productName = ReactiveCoreData;
@@ -578,10 +582,10 @@
 				166738741729695E00CABF2C /* main.m in Sources */,
 				1667387B1729695E00CABF2C /* ASWAppDelegate.m in Sources */,
 				166738811729695E00CABF2C /* ReactiveCoreData.xcdatamodeld in Sources */,
-				166738BA17296FBE00CABF2C /* NSManagedObject+RACFetch.m in Sources */,
-				16AF98F917297EBF000E9B8B /* RACSignal+RCDFetch.m in Sources */,
-				16CEF483172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
 				16CEF48E172ACD7500921072 /* Parent.m in Sources */,
+				1690735117339D3E007186EE /* NSManagedObject+RACFetch.m in Sources */,
+				1690735217339D3E007186EE /* RACSignal+RCDFetch.m in Sources */,
+				1690735317339D3E007186EE /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,10 +605,10 @@
 			target = 166738631729695E00CABF2C /* ReactiveCoreData */;
 			targetProxy = 1667388B1729695E00CABF2C /* PBXContainerItemProxy */;
 		};
-		166738B217296D9000CABF2C /* PBXTargetDependency */ = {
+		1690735717339D6C007186EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ReactiveCocoa;
-			targetProxy = 166738B117296D9000CABF2C /* PBXContainerItemProxy */;
+			targetProxy = 1690735617339D6C007186EE /* PBXContainerItemProxy */;
 		};
 		16BE18D51729786B00096F6C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -689,6 +693,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts/include",
 					"$(SRCROOT)/External/ReactiveCocoa/external/specta/src",
+					"$(SRCROOT)/ReactiveCoreData/",
 					"$(SRCROOT)/External/ReactiveCocoa/external/expecta/src/**",
 					"$(inherited)",
 				);
@@ -722,6 +727,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts/include",
 					"$(SRCROOT)/External/ReactiveCocoa/external/specta/src",
+					"$(SRCROOT)/ReactiveCoreData/",
 					"$(SRCROOT)/External/ReactiveCocoa/external/expecta/src/**",
 					"$(inherited)",
 				);
