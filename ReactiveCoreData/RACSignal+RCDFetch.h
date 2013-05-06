@@ -58,4 +58,6 @@
 // Sets the context as current for this scheduler and further chain runs on this scheduler
 - (RACSignal *)performInBackgroundContext;
 - (RACSignal *)fetchWithTrigger:(RACSignal *)triggerSignal;
+- (RACSignal *)findAll:(NSString *)entityName;
+- (RACSignal *)findOne:(NSString *)entityName;
 @end

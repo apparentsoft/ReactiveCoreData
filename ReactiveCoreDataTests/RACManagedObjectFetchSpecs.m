@@ -131,6 +131,32 @@ describe(@"RACSignal", ^{
         expect(completed).to.beTruthy();
         expect(actual).to.haveCountOf(2);
     });
+
+    it(@"starts a findAll fetch request for entity name", ^{
+        __block NSFetchRequest *actual;
+        [[[RACSignal return:@1] findAll:Parent.entityName]
+            subscribeNext:^(id x){
+                completed = YES;
+                actual = x;
+            }];
+        expect(completed).to.beTruthy();
+        expect(actual).to.beKindOf([NSFetchRequest class]);
+        expect([actual entityName]).to.equal([Parent entityName]);
+    });
+
+    it(@"starts a findOne fetch request for entity name", ^{
+        __block NSFetchRequest *actual;
+        [[[RACSignal return:@1] findOne:Parent.entityName]
+            subscribeNext:^(id x){
+                completed = YES;
+                actual = x;
+            }];
+        expect(completed).to.beTruthy();
+        expect(actual).to.beKindOf([NSFetchRequest class]);
+        expect([actual entityName]).to.equal([Parent entityName]);
+        expect([actual fetchLimit]).to.equal(1);
+    });
+
 });
 
 describe(@"FetchRequest operations:", ^{

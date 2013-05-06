@@ -141,4 +141,18 @@
         }]
         fetch];
 }
+
+- (RACSignal *)findAll:(NSString *)entityName;
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
+    return [RACSignal return:fetchRequest];
+}
+
+- (RACSignal *)findOne:(NSString *)entityName;
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
+    fetchRequest.fetchLimit = 1;
+    return [RACSignal return:fetchRequest];
+}
+
 @end
