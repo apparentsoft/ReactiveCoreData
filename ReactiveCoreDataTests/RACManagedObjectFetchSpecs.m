@@ -192,6 +192,37 @@ describe(@"FetchRequest operations:", ^{
         expect(final_result).to.equal(exp);
     });
 
+    it(@"creates a correct fetch in where:contains:options: with nil options", ^{
+        __block NSFetchRequest *actual;
+        [[[Parent findAll] where:@"name" contains:@"value" options:nil] subscribeNext:^(id x) {
+                actual = x;
+                completed = YES;
+            }];
+        expect(completed).to.beTruthy();
+        expect(actual.predicate.predicateFormat).to.equal(@"name CONTAINS \"value\"");
+    });
+
+    it(@"returns fetch without a predicate in where:contains:options: with an empty value", ^{
+        __block NSFetchRequest *actual;
+        [[[Parent findAll] where:@"name" contains:@"" options:nil] subscribeNext:^(id x) {
+            actual = x;
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+        expect(actual.predicate).to.beNil();
+    });
+
+    it(@"returns a correct fetch predicate in where:contains:options: with an non-nil options", ^{
+        __block NSFetchRequest *actual;
+        [[[Parent findAll] where:@"name" contains:@"value" options:@"cd"] subscribeNext:^(id x) {
+            actual = x;
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+        expect(actual.predicate.predicateFormat).to.equal(@"name CONTAINS[cd] \"value\"");
+    });
+
+
     it(@"sends complete", ^{
         [[Parent.findAll fetch]
             subscribeNext:^(id x) {

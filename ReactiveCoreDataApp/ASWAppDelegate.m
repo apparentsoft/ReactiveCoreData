@@ -94,14 +94,7 @@
     // This part refetches data for the table and puts it into filteredParents
     // It either fetches all Parents or filters by name, if there's something in the search field
     // It will also refetch, if objectsChanged send a next
-    RAC(self.filteredParents) = [[filterText
-        flattenMap:^(NSString *filter) {
-            if ([filter length] > 0)
-                return [[Parent findAll] where:@"name contains[cd] %@" args:@[filter]];
-            else
-                return [Parent findAll];
-        }]
-        fetchWithTrigger:objectsChanged];
+    RAC(self.filteredParents) = [[[Parent findAll] where:@"name" contains:filterText options:@"cd"] fetchWithTrigger:objectsChanged];
 
     // select the first row in the table
     [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];

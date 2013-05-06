@@ -39,6 +39,16 @@
 // Create a "%K == %@" predicate with key and value as arguments
 - (instancetype)where:(id)key equals:(id)value;
 
+// A convenience method for a common predicate case
+//
+// Creates a "%K CONTAINS[options] %@" predicate with key and value as arguments and adds it to the fetch request
+// The key may be a signal
+// If the `contains` parameter value is an empty string, it won't add the predicate, instead passing the fetch request as is
+// This is useful when the using it to filter text from the search field, which can be empty
+// `options` parameter is an optional string like `@"cd"` that can be added after CONTAINS inside brackets.
+// For example, passing @"cd" for `options` will result in a CONTAINS[cd] predicate
+- (instancetype)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
+
 // modifies the NSFetchRequest to set passed-in limit
 - (instancetype)limit:(id)limitOrSignal;
 
@@ -57,7 +67,15 @@
 //
 // Sets the context as current for this scheduler and further chain runs on this scheduler
 - (RACSignal *)performInBackgroundContext;
+
+// Will rerun fetch when triggerSignal sends any next value
 - (RACSignal *)fetchWithTrigger:(RACSignal *)triggerSignal;
+
+// Will return a signal with a fetch request for the given entity name
+//
+// It disregards the value in the signal that it follows
 - (RACSignal *)findAll:(NSString *)entityName;
+
+// Similar to findAll but also sets fetchLimit to 1
 - (RACSignal *)findOne:(NSString *)entityName;
 @end

@@ -9,6 +9,11 @@
 #import "RACSignal+RCDFetch.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
+@interface RACSignal ()
+
+- (NSArray *)convertToSignals:(NSArray *)args;
+@end
+
 @implementation RACSignal (RCDFetch)
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 {
@@ -51,19 +56,50 @@
 
 - (instancetype)where:(NSString *)format args:(NSArray *)args;
 {
-    NSMutableArray *signals = [NSMutableArray arrayWithCapacity:[args count]];
-    for (id arg in args) {
-        if ([arg isKindOfClass:[RACStream class]])
-            [signals addObject:arg];
-        else
-            [signals addObject:[RACSignal return:arg]];
-    }
+    NSArray *signals = [self convertToSignals:args];
     return [[[self combineLatestWith:[RACSignal combineLatest:signals]]
         reduceEach:^(NSFetchRequest *req, RACTuple *arguments) {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:format argumentArray:[arguments allObjects]];
             req.predicate = predicate;
             return req;
         }] setNameWithFormat:@"[%@] -where:%@ args:%@", self.name, format, args];
+}
+
+- (RACSignal *)convertToSignal:(id)valueOrSignal;
+{
+    if ([valueOrSignal isKindOfClass:[RACStream class]])
+        return valueOrSignal;
+    return [RACSignal return:valueOrSignal];
+}
+
+- (NSArray *)convertToSignals:(NSArray *)args;
+{
+    NSMutableArray *signals = [NSMutableArray arrayWithCapacity:[args count]];
+    for (id arg in args) {
+        [signals addObject:[self convertToSignal:arg]];
+    }
+    return [signals copy];
+}
+
+- (instancetype)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
+{
+    NSParameterAssert(valueOrSignal);
+    NSParameterAssert(key);
+    return [[self convertToSignal:valueOrSignal]
+        flattenMap:^(NSString *filter) {
+            if ([filter length] > 0) {
+                NSString *whereClause;
+                if (optionsOrNil) {
+                    whereClause = [NSString stringWithFormat:@"%%K CONTAINS[%@] %%@", optionsOrNil];
+                }
+                else {
+                    whereClause = @"%K CONTAINS %@";
+                }
+                return [self where:whereClause args:@[key, filter]];
+            }
+            else
+                return self;
+        }];
 }
 
 - (instancetype)limit:(id)limitOrSignal;

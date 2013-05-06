@@ -27,6 +27,7 @@ Also checkout the test application in the project which shows a simple table-vie
 
 - Initial signals that represent and modify NSFetchRequests (findAll, findOne)
 - `-[RACSignal where:args:]` method that sets a predicate with given format that can have signals as its arguments. This brings execution of NSFetchRequests into the Reactive domain. As any signal to predicate changes, the query is modified and sent next — to be fetched, for example.
+- A couple of signal-aware convenience methods for common predicate cases, like for CONTAINS predicate and for equal 
 - `[RACSignal limit:]` that accepts either a value or a signal.
 - `fetch` and `count` methods on RACSignal to execute the NSFetchRequest that's passed to them in the current NSManagedObjectContext and send the resulting array (or count) as "next".
 - `fetchWithTrigger:` which will rerun the fetch if the trigger fires any value.
