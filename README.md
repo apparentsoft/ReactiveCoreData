@@ -31,11 +31,12 @@ Also checkout the test application in the project which shows a simple table-vie
 - `[RACSignal limit:]` that accepts either a value or a signal.
 - `fetch` and `count` methods on RACSignal to execute the NSFetchRequest that's passed to them in the current NSManagedObjectContext and send the resulting array (or count) as "next".
 - `fetchWithTrigger:` which will rerun the fetch if the trigger fires any value.
+- fetching objectID and converting objectIDs to objects in current context
 - Running in background contexts
 - Saving of non-main contexts merges them into the main context.
 - Support not only for shoebox applications (with one main managed object context) but also document-based applications where you have a separate context for each document.
 
 ### TODO:
 
-- More signal operations to modify fetch requests (sorting, result type). In general, they can also be modified with a `-map:`.
+- More signal operations to modify fetch requests (sorting). In general, they can also be modified with a `-map:`.
 - Signals that are fired when a context is saved (wrap the NSNotification).

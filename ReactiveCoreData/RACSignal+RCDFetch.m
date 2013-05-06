@@ -200,4 +200,15 @@
     return [RACSignal return:fetchRequest];
 }
 
+- (RACSignal *)objectIDsToObjects;
+{
+    return [self map:^id(NSArray *objectIDs) {
+        NSManagedObjectContext *context = [NSManagedObjectContext currentContext];
+        NSMutableArray *objects = [NSMutableArray arrayWithCapacity:[objectIDs count]];
+        for (NSManagedObjectID *objectID in objectIDs) {
+            [objects addObject:[context objectWithID:objectID]];
+        }
+        return objects;
+    }];
+}
 @end

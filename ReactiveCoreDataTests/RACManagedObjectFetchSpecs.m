@@ -279,6 +279,15 @@ describe(@"FetchRequest operations:", ^{
         expect(completed).to.beTruthy();
     });
 
+    it(@"converts an ObjectID-type fetched array result to objects", ^{
+        [[[[[Parent findAll] IDResultType] fetch] objectIDsToObjects] subscribeNext:^(NSArray *result) {
+            expect(result).to.contain(Joe);
+            expect(result).to.contain(Jane);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
+
 });
 
 describe(@"Cross-Thread functionality", ^{

@@ -81,4 +81,7 @@
 
 // Similar to findAll but also sets fetchLimit to 1
 - (RACSignal *)findOne:(NSString *)entityName;
+
+// converts a signal of NSManagedObjectID array to array of these objects in current context
+- (RACSignal *)objectIDsToObjects;
 @end
