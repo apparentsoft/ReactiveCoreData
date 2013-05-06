@@ -112,6 +112,14 @@
         }] setNameWithFormat:@"[%@] -limit:%@", self.name, limitOrSignal ];
 }
 
+- (instancetype)IDResultType;
+{
+    return [self map:^id(NSFetchRequest *fetchRequest) {
+        fetchRequest.resultType = NSManagedObjectIDResultType;
+        return fetchRequest;
+    }];
+}
+
 - (instancetype)saveMoc;
 {
     return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
@@ -178,6 +186,7 @@
         fetch];
 }
 
+#pragma mark - Operations starting a new NSFetchRequest signal
 - (RACSignal *)findAll:(NSString *)entityName;
 {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];

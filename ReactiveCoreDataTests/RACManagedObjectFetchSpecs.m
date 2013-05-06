@@ -270,6 +270,14 @@ describe(@"FetchRequest operations:", ^{
         });
     });
 
+    it(@"can return NSManagedObjectIDResultType", ^{
+        [[[[Parent findAll] IDResultType] fetch] subscribeNext:^(NSArray *result) {
+            expect(result).to.haveCountOf(2);
+            expect([result lastObject]).to.beKindOf([NSManagedObjectID class]);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
 
 });
 

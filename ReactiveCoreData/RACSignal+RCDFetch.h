@@ -49,8 +49,11 @@
 // For example, passing @"cd" for `options` will result in a CONTAINS[cd] predicate
 - (instancetype)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
 
-// modifies the NSFetchRequest to set passed-in limit
+// Modifies the NSFetchRequest to set passed-in limit
 - (instancetype)limit:(id)limitOrSignal;
+
+// Modifies the NSFetchRequest. Sets resultType to NSManagedObjectIDResultType
+- (instancetype)IDResultType;
 
 // Saves current NSManagedObjectContext and waits for it to merge
 //
