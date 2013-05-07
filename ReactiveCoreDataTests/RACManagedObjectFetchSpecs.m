@@ -10,10 +10,10 @@
 #define EXP_SHORTHAND
 #import <Expecta.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "NSManagedObject+RACFetch.h"
+#import "NSManagedObject+ReactiveCoreData.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 #import "Parent.h"
-#import "RACSignal+RCDFetch.h"
+#import "RACSignal+ReactiveCoreData.h"
 
 NSManagedObjectContext * contextForTest(BOOL setAsMain)
 {
@@ -387,9 +387,8 @@ describe(@"Cross-Thread functionality", ^{
 
     it(@"Has a signal that sends after a merge", ^AsyncBlock{
         __block BOOL local_completed = NO;
-        id d1 = [[[[[RACSignal return:@"empty"]
-            performInBackgroundContext]
-            doNext:^(id _){
+        id d1 = [[[[RACSignal return:@"empty"]
+            performInBackgroundContext:^(NSManagedObjectContext *context) {
                 [Parent insert];
             }]
             saveMoc]

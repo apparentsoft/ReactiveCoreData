@@ -19,8 +19,8 @@
 		166738921729695E00CABF2C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 166738901729695E00CABF2C /* InfoPlist.strings */; };
 		166738BD1729700300CABF2C /* RACManagedObjectFetchSpecs.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738BC1729700300CABF2C /* RACManagedObjectFetchSpecs.m */; };
 		1690734817332229007186EE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1667386B1729695E00CABF2C /* CoreData.framework */; };
-		1690735117339D3E007186EE /* NSManagedObject+RACFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */; };
-		1690735217339D3E007186EE /* RACSignal+RCDFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */; };
+		1690735117339D3E007186EE /* NSManagedObject+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 166738B917296FBE00CABF2C /* NSManagedObject+ReactiveCoreData.m */; };
+		1690735217339D3E007186EE /* RACSignal+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16AF98F817297EBF000E9B8B /* RACSignal+ReactiveCoreData.m */; };
 		1690735317339D3E007186EE /* NSManagedObjectContext+ReactiveCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */; };
 		1690735417339D4B007186EE /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 		1690735517339D68007186EE /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
@@ -191,11 +191,11 @@
 		1667388F1729695E00CABF2C /* ReactiveCoreDataTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ReactiveCoreDataTests-Info.plist"; sourceTree = "<group>"; };
 		166738911729695E00CABF2C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		166738A017296D0200CABF2C /* ReactiveCocoa.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactiveCocoa.xcodeproj; path = External/ReactiveCocoa/ReactiveCocoaFramework/ReactiveCocoa.xcodeproj; sourceTree = "<group>"; };
-		166738B817296FBE00CABF2C /* NSManagedObject+RACFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+RACFetch.h"; sourceTree = "<group>"; };
-		166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+RACFetch.m"; sourceTree = "<group>"; };
+		166738B817296FBE00CABF2C /* NSManagedObject+ReactiveCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+ReactiveCoreData.h"; sourceTree = "<group>"; };
+		166738B917296FBE00CABF2C /* NSManagedObject+ReactiveCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+ReactiveCoreData.m"; sourceTree = "<group>"; };
 		166738BC1729700300CABF2C /* RACManagedObjectFetchSpecs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RACManagedObjectFetchSpecs.m; sourceTree = "<group>"; };
-		16AF98F717297EBF000E9B8B /* RACSignal+RCDFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RACSignal+RCDFetch.h"; sourceTree = "<group>"; };
-		16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RACSignal+RCDFetch.m"; sourceTree = "<group>"; };
+		16AF98F717297EBF000E9B8B /* RACSignal+ReactiveCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RACSignal+ReactiveCoreData.h"; sourceTree = "<group>"; };
+		16AF98F817297EBF000E9B8B /* RACSignal+ReactiveCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RACSignal+ReactiveCoreData.m"; sourceTree = "<group>"; };
 		16BE18C51729786400096F6C /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = External/ReactiveCocoa/external/expecta/Expecta.xcodeproj; sourceTree = "<group>"; };
 		16BE18D61729787F00096F6C /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = External/ReactiveCocoa/external/specta/Specta.xcodeproj; sourceTree = "<group>"; };
 		16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+ReactiveCoreData.h"; sourceTree = "<group>"; };
@@ -323,10 +323,10 @@
 		1667389E17296A8400CABF2C /* ReactiveCoreData */ = {
 			isa = PBXGroup;
 			children = (
-				166738B817296FBE00CABF2C /* NSManagedObject+RACFetch.h */,
-				166738B917296FBE00CABF2C /* NSManagedObject+RACFetch.m */,
-				16AF98F717297EBF000E9B8B /* RACSignal+RCDFetch.h */,
-				16AF98F817297EBF000E9B8B /* RACSignal+RCDFetch.m */,
+				166738B817296FBE00CABF2C /* NSManagedObject+ReactiveCoreData.h */,
+				166738B917296FBE00CABF2C /* NSManagedObject+ReactiveCoreData.m */,
+				16AF98F717297EBF000E9B8B /* RACSignal+ReactiveCoreData.h */,
+				16AF98F817297EBF000E9B8B /* RACSignal+ReactiveCoreData.m */,
 				16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */,
 				16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */,
 				1637E1D817328BEA0095B22B /* ReactiveCoreData.h */,
@@ -588,8 +588,8 @@
 				1667387B1729695E00CABF2C /* ASWAppDelegate.m in Sources */,
 				166738811729695E00CABF2C /* ReactiveCoreData.xcdatamodeld in Sources */,
 				16CEF48E172ACD7500921072 /* Parent.m in Sources */,
-				1690735117339D3E007186EE /* NSManagedObject+RACFetch.m in Sources */,
-				1690735217339D3E007186EE /* RACSignal+RCDFetch.m in Sources */,
+				1690735117339D3E007186EE /* NSManagedObject+ReactiveCoreData.m in Sources */,
+				1690735217339D3E007186EE /* RACSignal+ReactiveCoreData.m in Sources */,
 				1690735317339D3E007186EE /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
 				60354E3759859C41FA937381 /* NSNotificationCenter+RACSupport.m in Sources */,
 			);

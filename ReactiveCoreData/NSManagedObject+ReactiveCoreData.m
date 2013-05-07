@@ -1,5 +1,5 @@
 //
-//  NSManagedObject+RACFetch.m
+//  NSManagedObject+ReactiveCoreData.m
 //  ReactiveCoreData
 //
 //  Created by Jacob Gorban on 25/04/2013.
@@ -7,11 +7,11 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "NSManagedObject+RACFetch.h"
+#import "NSManagedObject+ReactiveCoreData.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
-#import "RACSignal+RCDFetch.h"
+#import "RACSignal+ReactiveCoreData.h"
 
-@implementation NSManagedObject (RACFetch)
+@implementation NSManagedObject (ReactiveCoreData)
 
 + (RACSignal *)findAll;
 {

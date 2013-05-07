@@ -1,5 +1,5 @@
 //
-//  RACSignal+RCDFetch.h
+//  RACSignal+ReactiveCoreData.h
 //  ReactiveCoreData
 //
 //  Created by Jacob Gorban on 25/04/2013.
@@ -8,7 +8,7 @@
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
-@interface RACSignal (RCDFetch)
+@interface RACSignal (ReactiveCoreData)
 
 // Execute the NSFetchRequest that's sent in next, in specified context
 //
@@ -52,6 +52,16 @@
 // Modifies the NSFetchRequest to set passed-in limit
 - (instancetype)limit:(id)limitOrSignal;
 
+// Modifies NSFetchRequest to set sortDescriptor
+//
+// The `sortOrSignal` parameter may be one of the following:
+// - An NSSortDescriptor
+// - An NSArray of NSSortDescriptors
+// - An NSString of the key to be sorted in ascending order
+// - An NSString of the key, prefixed by a minus (@"-key") to sort key in descending order
+// - A RACSignal that sends any of the above values
+- (RACSignal *)sortBy:(id)sortOrSignal;
+
 // Modifies the NSFetchRequest. Sets resultType to NSManagedObjectIDResultType
 - (instancetype)IDResultType;
 
@@ -71,6 +81,11 @@
 // Sets the context as current for this scheduler and further chain runs on this scheduler
 - (RACSignal *)performInBackgroundContext;
 
+// Creates a new background scheduler and context and executes the passed-in block
+//
+// Sets the context as current for this scheduler and further chain runs on this scheduler
+- (RACSignal *)performInBackgroundContext:(void (^)(NSManagedObjectContext *))block;
+
 // Will rerun fetch when triggerSignal sends any next value
 - (RACSignal *)fetchWithTrigger:(RACSignal *)triggerSignal;
 
@@ -84,5 +99,5 @@
 
 // converts a signal of NSManagedObjectID array to array of these objects in current context
 - (RACSignal *)objectIDsToObjects;
-- (RACSignal *)sortBy:(id)sortOrSignal;
+
 @end

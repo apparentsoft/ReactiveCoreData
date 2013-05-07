@@ -15,7 +15,11 @@ static NSString const *kRCDMainManagedObjectContext;
 
 @interface NSManagedObjectContext (ReactiveCoreData)
 
+// sends the NSManagedObjectContextDidSaveNotification notification when the context is merged into
+// This is for the main context, sends on the main thread
 @property (readonly, nonatomic) RACSignal *rcd_merged;
+
+// sends the NSManagedObjectContextDidSaveNotification notification when the context is saved
 @property (readonly, nonatomic) RACSignal *rcd_saved;
 
 // Returns a signal that sends result of executing a fetch request (or sends error)

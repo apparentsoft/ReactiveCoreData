@@ -9,8 +9,8 @@
 #ifndef ReactiveCoreData_ReactiveCoreData_h
 #define ReactiveCoreData_ReactiveCoreData_h
 
-#import "NSManagedObject+RACFetch.h"
-#import "RACSignal+RCDFetch.h"
+#import "NSManagedObject+ReactiveCoreData.h"
+#import "RACSignal+ReactiveCoreData.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
 #endif

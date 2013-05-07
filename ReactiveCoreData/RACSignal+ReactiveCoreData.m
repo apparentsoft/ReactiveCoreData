@@ -1,12 +1,12 @@
 //
-//  RACSignal+RCDFetch.m
+//  RACSignal+ReactiveCoreData.m
 //  ReactiveCoreData
 //
 //  Created by Jacob Gorban on 25/04/2013.
 //  Copyright (c) 2013 Apparent Software. All rights reserved.
 //
 
-#import "RACSignal+RCDFetch.h"
+#import "RACSignal+ReactiveCoreData.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
 @interface RACSignal ()
@@ -14,7 +14,7 @@
 - (NSArray *)convertToSignals:(NSArray *)args;
 @end
 
-@implementation RACSignal (RCDFetch)
+@implementation RACSignal (ReactiveCoreData)
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 {
     return [[self flattenMap:^RACStream *(NSFetchRequest *req) {
@@ -194,6 +194,14 @@
             }];
         }];
     }] setNameWithFormat:@"[%@] -performInBackgroundContext", self.name];
+}
+
+- (RACSignal *)performInBackgroundContext:(void(^)(NSManagedObjectContext *))block;
+{
+    return [[self performInBackgroundContext]
+        doNext:^(id x) {
+            block([NSManagedObjectContext currentContext]);
+        }];
 }
 
 - (RACSignal *)fetchWithTrigger:(RACSignal *)triggerSignal;

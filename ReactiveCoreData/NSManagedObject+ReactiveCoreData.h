@@ -1,5 +1,5 @@
 //
-//  NSManagedObject+RACFetch.h
+//  NSManagedObject+ReactiveCoreData.h
 //  ReactiveCoreData
 //
 //  Created by Jacob Gorban on 25/04/2013.
@@ -10,7 +10,7 @@
 
 @class RACSignal;
 
-@interface NSManagedObject (RACFetch)
+@interface NSManagedObject (ReactiveCoreData)
 
 // Creates a signal that sends an NSFetchRequest for specified entity
 + (RACSignal *)findAll;
