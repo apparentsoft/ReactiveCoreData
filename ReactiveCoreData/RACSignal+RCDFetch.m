@@ -104,7 +104,7 @@
 
 - (instancetype)limit:(id)limitOrSignal;
 {
-    RACSignal *limitSignal = [limitOrSignal isKindOfClass:[RACStream class]] ? limitOrSignal : [RACSignal return:limitOrSignal];
+    RACSignal *limitSignal = [self convertToSignal:limitOrSignal];
     return [[[self combineLatestWith:limitSignal]
         reduceEach:^(NSFetchRequest *req, NSNumber *limit) {
             req.fetchLimit = limit.unsignedIntegerValue;
@@ -114,10 +114,29 @@
 
 - (instancetype)IDResultType;
 {
-    return [self map:^id(NSFetchRequest *fetchRequest) {
+    return [[self map:^id(NSFetchRequest *fetchRequest) {
         fetchRequest.resultType = NSManagedObjectIDResultType;
         return fetchRequest;
-    }];
+    }] setNameWithFormat:@"[%@] -IDResultType", self.name];
+}
+
+- (RACSignal *)sortBy:(id)sortOrSignal;
+{
+    RACSignal *sortSignal = [self convertToSignal:sortOrSignal];
+    return [[[self combineLatestWith:sortSignal]
+        reduceEach:^(NSFetchRequest *fetchRequest, id sortValue) {
+            if ([sortValue isKindOfClass:[NSSortDescriptor class]]) {
+                sortValue = @[sortValue];
+            }
+            else if ([sortValue isKindOfClass:[NSString class]]) {
+                NSAssert([sortValue length] > 0, @"Key to sort by can't be empty");
+                BOOL ascending = ([sortValue characterAtIndex:0] != '-');
+                NSString *key = ascending ? sortValue : [sortValue substringFromIndex:1];
+                sortValue = @[ [NSSortDescriptor sortDescriptorWithKey:key ascending:ascending] ];
+            }
+            fetchRequest.sortDescriptors = sortValue;
+            return fetchRequest;
+        }] setNameWithFormat:@"[%@] -sortBy:%@", self.name, sortOrSignal];
 }
 
 - (instancetype)saveMoc;
@@ -211,4 +230,5 @@
         return objects;
     }];
 }
+
 @end

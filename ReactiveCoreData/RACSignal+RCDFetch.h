@@ -84,4 +84,5 @@
 
 // converts a signal of NSManagedObjectID array to array of these objects in current context
 - (RACSignal *)objectIDsToObjects;
+- (RACSignal *)sortBy:(id)sortOrSignal;
 @end

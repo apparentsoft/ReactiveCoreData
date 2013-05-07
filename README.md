@@ -29,6 +29,7 @@ Also checkout the test application in the project which shows a simple table-vie
 - `-[RACSignal where:args:]` method that sets a predicate with given format that can have signals as its arguments. This brings execution of NSFetchRequests into the Reactive domain. As any signal to predicate changes, the query is modified and sent next — to be fetched, for example.
 - A couple of signal-aware convenience methods for common predicate cases, like for CONTAINS predicate and for equal 
 - `[RACSignal limit:]` that accepts either a value or a signal.
+- `[RACSignal sortBy:]` that accepts either a "key" string, or a "-key" (for descending sort), or a sort descriptor, or an array of sort descriptors, or a signal with any of these
 - `fetch` and `count` methods on RACSignal to execute the NSFetchRequest that's passed to them in the current NSManagedObjectContext and send the resulting array (or count) as "next".
 - `fetchWithTrigger:` which will rerun the fetch if the trigger fires any value.
 - fetching objectID and converting objectIDs to objects in current context
@@ -37,6 +38,4 @@ Also checkout the test application in the project which shows a simple table-vie
 - Support not only for shoebox applications (with one main managed object context) but also document-based applications where you have a separate context for each document.
 
 ### TODO:
-
-- More signal operations to modify fetch requests (sorting). In general, they can also be modified with a `-map:`.
 - Signals that are fired when a context is saved (wrap the NSNotification).

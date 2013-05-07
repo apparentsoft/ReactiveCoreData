@@ -288,6 +288,69 @@ describe(@"FetchRequest operations:", ^{
         expect(completed).to.beTruthy();
     });
 
+    it(@"updates the sort of a fetch request for one constant sort descriptor", ^{
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+        [[[Parent findAll] sortBy:sortDescriptor] subscribeNext:^(NSFetchRequest *actual) {
+            expect(actual.sortDescriptors).to.equal(@[sortDescriptor]);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
+
+    it(@"updates the sort of a fetch request for an array of sort descriptors", ^{
+        NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+        NSSortDescriptor *sortByAge = [NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES];
+        NSArray *sortDescriptors = @[ sortByName, sortByAge ];
+        [[[Parent findAll] sortBy:sortDescriptors] subscribeNext:^(NSFetchRequest *actual) {
+            expect(actual.sortDescriptors).to.equal(sortDescriptors);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
+
+    it(@"updates the sort of a fetch request for a signal with an array of sort descriptors", ^{
+        NSSortDescriptor *sortByName = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+        NSSortDescriptor *sortByAge = [NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES];
+        NSArray *sortDescriptors1 = @[ sortByName, sortByAge ];
+        NSArray *sortDescriptors2 = @[ sortByAge, sortByName ];
+        RACSubject *sortDescriptors = [RACSubject subject];
+        [[[[[Parent findAll] sortBy:sortDescriptors]
+            map:^id(NSFetchRequest *request) {
+                return request.sortDescriptors;
+            }]
+            collect]
+            subscribeNext:^(NSArray *actual) {
+                expect(actual[0]).to.equal(sortDescriptors1);
+                expect(actual[1]).to.equal(sortDescriptors2);
+                expect([actual[2][0] ascending]).to.beFalsy();
+                expect([actual[2][0] key]).to.equal(@"name");
+                completed = YES;
+            }];
+        [sortDescriptors sendNext:sortDescriptors1];
+        [sortDescriptors sendNext:sortDescriptors2];
+        [sortDescriptors sendNext:@"-name"];
+        [sortDescriptors sendCompleted];
+        expect(completed).to.beTruthy();
+    });
+
+    it(@"updates the sort of a fetch request ascending for a key string value", ^{
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+        [[[Parent findAll] sortBy:@"name"] subscribeNext:^(NSFetchRequest *actual) {
+            expect(actual.sortDescriptors).to.equal(@[sortDescriptor]);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
+
+    it(@"updates the sort of a fetch request descending for a -key string value", ^{
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO];
+        [[[Parent findAll] sortBy:@"-name"] subscribeNext:^(NSFetchRequest *actual) {
+            expect(actual.sortDescriptors).to.equal(@[sortDescriptor]);
+            completed = YES;
+        }];
+        expect(completed).to.beTruthy();
+    });
+
 });
 
 describe(@"Cross-Thread functionality", ^{
