@@ -2,30 +2,36 @@
 
 ReactiveCoreData (RCD) is an attempt to bring Core Data into the [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa) (RAC) world.
 
-Currently built as an empty Mac application with specs, not a framework.
-To use, copy the source files from ReactiveCoreData to your project.
+Currently has several files with the source code, [Specta](https://github.com/petejkim/specta) specs and a [demo application][Demo] for the Mac.
 
-The idea is to write code such as:
+To use, copy the source files from [ReactiveCoreData](ReactiveCoreData) folder to your project. You should also have ReactiveCocoa in your project, of course.
+
+Code from the Mac example:
 
 ```objc
-[[[[[[MyManagedObject.findAll 
-where:attribute equals:valueSignal] 
-limit:50] 
-sortBy:sortSignal] 
-fetch]
-subscribeNext: ^(NSArray *)objects {
-	NSLog(@"Fetched %@", objects);
-}];
+// This part refetches data for the table and puts it into filteredParents
+// It either fetches all Parents or filters by name, if there's something in the search field
+// It will also refetch, if objectsChanged send a next
+RAC(self.filteredParents) = [[[[Parent findAll]
+    where:@"name" contains:filterText options:@"cd"]
+    sortBy:@"name"]
+    fetchWithTrigger:objectsChanged];
 ```
 
-See the test Specs (in RACManagedObjectFetchSpecs.m) for some usage examples.
+See the test [Specs][Specs] for some usage examples.
 
-Also checkout the test application in the project which shows a simple table-view with Core Data backed storage using ReactiveCoreData and ReactiveCocoa for connecting things.
+Also checkout the demo application in the project. It shows a simple table-view with Core Data backed storage using ReactiveCoreData and ReactiveCocoa for connecting things.
+
+The headers also provide documentation for the various methods.
+
+It's not feature-complete and more could be done but will be added based on actual usage and your contributions.
+
+This being said, it should work both with shoebox and document-based applications, where there are many object contexts.
 
 
 ### Done:
 
-- Initial signals that represent and modify NSFetchRequests (findAll, findOne)
+- Start signals that represent and modify NSFetchRequests (findAll, findOne) from NSManagedObject.
 - `-[RACSignal where:args:]` method that sets a predicate with given format that can have signals as its arguments. This brings execution of NSFetchRequests into the Reactive domain. As any signal to predicate changes, the query is modified and sent next — to be fetched, for example.
 - A couple of signal-aware convenience methods for common predicate cases, like for CONTAINS predicate and for equal 
 - `[RACSignal limit:]` that accepts either a value or a signal.
@@ -39,5 +45,5 @@ Also checkout the test application in the project which shows a simple table-vie
 - Signal that's fired after a merge.
 - Support not only for shoebox applications (with one main managed object context) but also document-based applications where you have a separate context for each document.
 
-### TODO:
-- 
+[Demo]: ReactiveCoreDataApp/ASWAppDelegate.m
+[Specs]: ReactiveCoreDataTests/RACManagedObjectFetchSpecs.m
