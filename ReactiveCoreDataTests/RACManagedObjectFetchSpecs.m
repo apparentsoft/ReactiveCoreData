@@ -385,7 +385,7 @@ describe(@"Cross-Thread functionality", ^{
         expect(completed).will.beTruthy();
     });
 
-    it(@"Has a signal that posts after a merge", ^AsyncBlock{
+    it(@"Has a signal that sends after a merge", ^AsyncBlock{
         __block BOOL local_completed = NO;
         id d1 = [[[[[RACSignal return:@"empty"]
             performInBackgroundContext]
@@ -403,6 +403,18 @@ describe(@"Cross-Thread functionality", ^{
         expect(local_completed).will.beTruthy();
         expect(d1).toNot.beNil();
         expect(d2).toNot.beNil();
+    });
+
+    it(@"Has a signal that sends after a save", ^{
+
+        [ctx.rcd_saved subscribeNext:^(id x) {
+            expect([x object]).to.equal(ctx);
+            completed = YES;
+        }];
+
+        [Parent insert];
+        [ctx save:NULL];
+        expect(completed).will.beTruthy();
     });
 });
 

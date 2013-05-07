@@ -35,7 +35,9 @@ Also checkout the test application in the project which shows a simple table-vie
 - fetching objectID and converting objectIDs to objects in current context
 - Running in background contexts
 - Saving of non-main contexts merges them into the main context.
+- Signal that's fired when a context is saved (wraps NSManagedObjectContextDidSaveNotification).
+- Signal that's fired after a merge.
 - Support not only for shoebox applications (with one main managed object context) but also document-based applications where you have a separate context for each document.
 
 ### TODO:
-- Signals that are fired when a context is saved (wrap the NSNotification).
+- 

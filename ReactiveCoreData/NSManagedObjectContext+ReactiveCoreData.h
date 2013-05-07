@@ -16,6 +16,7 @@ static NSString const *kRCDMainManagedObjectContext;
 @interface NSManagedObjectContext (ReactiveCoreData)
 
 @property (readonly, nonatomic) RACSignal *rcd_merged;
+@property (readonly, nonatomic) RACSignal *rcd_saved;
 
 // Returns a signal that sends result of executing a fetch request (or sends error)
 - (RACSignal *)executeRequest:(NSFetchRequest *)request;

@@ -11,6 +11,7 @@
 #import <ReactiveCocoa/EXTScope.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 #import "RACSignal+RCDFetch.h"
+#import "NSNotificationCenter+RACSupport.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
 static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectContext";
@@ -99,6 +100,16 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
         }]];
     }
     return merged;
+}
+
+- (RACSignal *)rcd_saved;
+{
+    RACSignal *saved = objc_getAssociatedObject(self, _cmd);
+    if (!saved) {
+        saved = [[NSNotificationCenter defaultCenter] rac_addObserverForName:NSManagedObjectContextDidSaveNotification object:self];
+        objc_setAssociatedObject(self, _cmd, saved, OBJC_ASSOCIATION_RETAIN);
+    }
+    return saved;
 }
 
 - (NSManagedObjectContext *)mainContext

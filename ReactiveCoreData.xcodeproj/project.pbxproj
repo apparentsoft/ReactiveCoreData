@@ -29,6 +29,7 @@
 		16CEF48E172ACD7500921072 /* Parent.m in Sources */ = {isa = PBXBuildFile; fileRef = 16CEF48D172ACD7500921072 /* Parent.m */; };
 		16CEF49C172D2A1100921072 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
 		16CEF49F172D2A2800921072 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 166738A917296D0200CABF2C /* ReactiveCocoa.framework */; };
+		60354E3759859C41FA937381 /* NSNotificationCenter+RACSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 60354754CABDB576589FA531 /* NSNotificationCenter+RACSupport.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -201,6 +202,8 @@
 		16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+ReactiveCoreData.m"; sourceTree = "<group>"; };
 		16CEF48C172ACD7500921072 /* Parent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parent.h; sourceTree = "<group>"; };
 		16CEF48D172ACD7500921072 /* Parent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parent.m; sourceTree = "<group>"; };
+		603546E7B43BA6E96624D63D /* NSNotificationCenter+RACSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+RACSupport.h"; sourceTree = "<group>"; };
+		60354754CABDB576589FA531 /* NSNotificationCenter+RACSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNotificationCenter+RACSupport.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +330,8 @@
 				16CEF481172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.h */,
 				16CEF482172981D700921072 /* NSManagedObjectContext+ReactiveCoreData.m */,
 				1637E1D817328BEA0095B22B /* ReactiveCoreData.h */,
+				60354754CABDB576589FA531 /* NSNotificationCenter+RACSupport.m */,
+				603546E7B43BA6E96624D63D /* NSNotificationCenter+RACSupport.h */,
 			);
 			path = ReactiveCoreData;
 			sourceTree = "<group>";
@@ -586,6 +591,7 @@
 				1690735117339D3E007186EE /* NSManagedObject+RACFetch.m in Sources */,
 				1690735217339D3E007186EE /* RACSignal+RCDFetch.m in Sources */,
 				1690735317339D3E007186EE /* NSManagedObjectContext+ReactiveCoreData.m in Sources */,
+				60354E3759859C41FA937381 /* NSNotificationCenter+RACSupport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
