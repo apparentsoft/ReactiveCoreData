@@ -139,7 +139,7 @@
         }] setNameWithFormat:@"[%@] -sortBy:%@", self.name, sortOrSignal];
 }
 
-- (instancetype)saveMoc;
+- (instancetype)saveContext;
 {
     return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         return [self
@@ -159,7 +159,7 @@
             completed:^{
                 [subscriber sendCompleted];
             }];
-    }] setNameWithFormat:@"[%@] -saveMoc", self.name];
+    }] setNameWithFormat:@"[%@] -saveContext", self.name];
 }
 
 - (RACSignal *)performInContext:(NSManagedObjectContext *)context

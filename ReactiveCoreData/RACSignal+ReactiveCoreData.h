@@ -69,7 +69,7 @@
 //
 // Send an error if couldn't save
 // Passes next from previous subscriber on to the next one
-- (instancetype)saveMoc;
+- (instancetype)saveContext;
 
 // Sets context as current context and return self
 //

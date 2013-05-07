@@ -368,11 +368,11 @@ describe(@"Cross-Thread functionality", ^{
     it(@"Merges changes from background context", ^AsyncBlock{
         [[[[[[RACSignal return:@"empty"]
             performInBackgroundContext]
-            doNext:^(id _){
+            doNext:^(id _) {
                 Parent *dad = [Parent insert];
                 dad.name = @"Dad";
             }]
-            saveMoc]
+            saveContext]
             deliverOn:RACScheduler.mainThreadScheduler]
             subscribeNext:^(id _){
                 [[[Parent findAll] fetch]
@@ -391,7 +391,7 @@ describe(@"Cross-Thread functionality", ^{
             performInBackgroundContext:^(NSManagedObjectContext *context) {
                 [Parent insert];
             }]
-            saveMoc]
+            saveContext]
             subscribeNext:^(id x) {
             }];
         id d2 = [ctx.rcd_merged subscribeNext:^(NSNotification *note){
@@ -486,7 +486,7 @@ describe(@"Document-based contexts", ^{
                 Parent *dad = [Parent insert];
                 dad.name = @"dad";
             }]
-            saveMoc]
+            saveContext]
             performInBackgroundContext]
             subscribeNext:^(id x){
                 NSManagedObjectContext *currentContext = [NSManagedObjectContext currentContext];
