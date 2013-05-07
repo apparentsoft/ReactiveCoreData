@@ -18,7 +18,26 @@ RAC(self.filteredParents) = [[[[Parent findAll]
     fetchWithTrigger:objectsChanged];
 ```
 
-See the test [Specs][Specs] for some usage examples.
+Another example of background processing:
+```objc
+[[[[triggerSignal 
+    performInBackgroundContext:^(NSManagedObjectContext *context) {
+        [Parent insert];
+    }]
+    saveContext]
+    deliverOn:RACScheduler.mainThreadScheduler]
+    subscribeNext:^(id _) {
+        // Update UI
+    }];
+    
+// We can also react to main context's merge notifications to update the UI
+[mainContext.rcd_merged 
+    subscribeNext:^(NSNotification *note){
+        // Update UI
+    }];
+```
+
+See the test [Specs][Specs] for some crude usage examples.
 
 Also checkout the demo application in the project. It shows a simple table-view with Core Data backed storage using ReactiveCoreData and ReactiveCocoa for connecting things.
 
