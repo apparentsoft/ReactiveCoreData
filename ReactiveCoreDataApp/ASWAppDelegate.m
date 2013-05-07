@@ -17,7 +17,8 @@
 @property (weak) IBOutlet NSSearchField *searchField;
 @property (weak) IBOutlet NSTableView *tableView;
 
-@property (strong) NSArray *filteredParents;
+@property (strong, nonatomic) NSArray *filteredParents;
+@property (strong, nonatomic) RACSubject *nameChanged;
 
 @end
 
@@ -82,7 +83,8 @@
 
     // we use this later to trigger refetch of the table
     // startWith is needed for the initial trigger on launch
-    RACSignal *objectsChanged = [[RACSignal merge:@[addedParent, removedParent]] startWith:@YES];
+    self.nameChanged = [RACSubject subject];
+    RACSignal *objectsChanged = [[RACSignal merge:@[addedParent, removedParent, self.nameChanged]] startWith:@YES];
 
     // filterText will send next when the text in searchField changes either by user edit or direct update by us.
     RACSignal *filterText = [[RACSignal
@@ -94,7 +96,10 @@
     // This part refetches data for the table and puts it into filteredParents
     // It either fetches all Parents or filters by name, if there's something in the search field
     // It will also refetch, if objectsChanged send a next
-    RAC(self.filteredParents) = [[[Parent findAll] where:@"name" contains:filterText options:@"cd"] fetchWithTrigger:objectsChanged];
+    RAC(self.filteredParents) = [[[[Parent findAll]
+        where:@"name" contains:filterText options:@"cd"]
+        sortBy:@"name"]
+        fetchWithTrigger:objectsChanged];
 
     // select the first row in the table
     [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
@@ -124,14 +129,12 @@
     Parent *parent = self.filteredParents[(NSUInteger) row];
     if ([tableColumn.identifier isEqualToString:@"Name"]) {
         parent.name = object;
+        [self.nameChanged sendNext:object];
     }
     else {
         parent.age = [object integerValue];
     }
 }
-
-
-
 
 #pragma mark - Boilerplate
 
