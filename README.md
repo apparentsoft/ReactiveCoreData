@@ -26,7 +26,7 @@ The headers also provide documentation for the various methods.
 
 It's not feature-complete and more could be done but will be added based on actual usage and your contributions.
 
-This being said, it should work both with shoebox and document-based applications, where there are many object contexts.
+That being said, it should work both with shoebox and document-based applications, where there are many object contexts.
 
 
 ### Done:
