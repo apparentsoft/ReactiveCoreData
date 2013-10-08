@@ -7,11 +7,11 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveCocoa/NSNotificationCenter+RACSupport.h>
 #import <objc/runtime.h>
 #import <ReactiveCocoa/EXTScope.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 #import "RACSignal+ReactiveCoreData.h"
-#import "NSNotificationCenter+RACSupport.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
 static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectContext";
