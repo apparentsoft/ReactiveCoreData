@@ -128,7 +128,6 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
         [NSNotificationCenter.defaultCenter removeObserver:moc name:NSManagedObjectContextDidSaveNotification object:moc];
     }]];
 
-//    NSLog(@"Creating a NEW CHILD MOC (%@) with main MOC:%@", moc, mainContext);
     return moc;
 }
 

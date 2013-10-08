@@ -12,6 +12,7 @@
 @interface RACSignal ()
 
 - (NSArray *)convertToSignals:(NSArray *)args;
+
 @end
 
 @implementation RACSignal (ReactiveCoreData)
