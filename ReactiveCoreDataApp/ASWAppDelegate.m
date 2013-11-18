@@ -35,21 +35,21 @@
     [NSManagedObjectContext setMainContext:[self managedObjectContext]];
 
     // Using RACCommand instead of target/action
-    self.addButton.rac_command = [RACCommand command];
-
-    // The signal holds the newly inserted parent, though we don't use it later.
-    RACSignal *addedParent = [self.addButton.rac_command addSignalBlock:^(id _) {
+    self.addButton.rac_command = [[RACCommand alloc] initWithSignalBlock:^(id _) {
         self.searchField.stringValue = @""; // reset search field on add
 
         // insert a new parent and set its default values
         // Of course, it might be better to do this in the model class itself
         // but it gives an example of using ReactiveCoreData
         return [RACSignal return:
-            [Parent insert:^(Parent *parent) {
-                parent.name = @"No name";
-                parent.age = 40;
-            }]];
+                [Parent insert:^(Parent *parent) {
+            parent.name = @"No name";
+            parent.age = 40;
+        }]];
     }];
+
+    // The signal holds the newly inserted parent, though we don't use it later.
+    RACSignal *addedParent = self.addButton.rac_command.executionSignals;
 
     // Basically, implement a delegate method in a signal
     RACSignal *aParentIsSelected = [[self rac_signalForSelector:@selector(tableViewSelectionDidChange:)]
@@ -61,23 +61,24 @@
     // Otherwise, need to subscribe to NSTableViewSelectionDidChangeNotification manually
     self.tableView.delegate = self;
 
-    self.removeButton.rac_command = [RACCommand commandWithCanExecuteSignal:aParentIsSelected];
-
     // Pretty straight-forward removal
     // I'd even say unnecessary long with the return of signal in addSignalBlock:
     // The good about having it a signal is that we can chain it later to react to deletion
     // See how this affects objectsChanged.
-    RACSignal *removedParent = [self.removeButton.rac_command addSignalBlock:^(id _) {
-        NSArray *objectsToRemove = [self.filteredParents objectsAtIndexes:self.tableView.selectedRowIndexes];
-        NSManagedObjectContext *context = [NSManagedObjectContext currentContext];
-        for (NSManagedObject *obj in objectsToRemove) {
-            [context deleteObject:obj];
-        }
-        return [RACSignal return:@YES];
-    }];
+
+    self.removeButton.rac_command = [[RACCommand alloc] initWithEnabled:aParentIsSelected signalBlock:^RACSignal *(id _) {
+            NSArray *objectsToRemove = [self.filteredParents objectsAtIndexes:self.tableView.selectedRowIndexes];
+            NSManagedObjectContext *context = [NSManagedObjectContext currentContext];
+            for (NSManagedObject *obj in objectsToRemove) {
+                [context deleteObject:obj];
+            }
+            return [RACSignal return:@YES];
+        }];
+
+    RACSignal *removedParent = self.removeButton.rac_command.executionSignals;
 
     // reload the data after filteredParents is updated
-    [RACAble(self.filteredParents) subscribeNext:^(id x) {
+    [RACObserve(self, filteredParents) subscribeNext:^(id x) {
         [self.tableView reloadData];
     }];
 
@@ -88,7 +89,7 @@
 
     // filterText will send next when the text in searchField changes either by user edit or direct update by us.
     RACSignal *filterText = [[RACSignal
-        merge:@[self.searchField.rac_textSignal, RACAbleWithStart(self.searchField.stringValue)]]
+        merge:@[self.searchField.rac_textSignal, RACObserve(self, searchField.stringValue)]]
         map:^id(id value) {
             return [value copy]; // just in case
         }];
@@ -96,7 +97,7 @@
     // This part refetches data for the table and puts it into filteredParents
     // It either fetches all Parents or filters by name, if there's something in the search field
     // It will also refetch, if objectsChanged send a next
-    RAC(self.filteredParents) = [[[[Parent findAll]
+    RAC(self, filteredParents) = [[[[Parent findAll]
         where:@"name" contains:filterText options:@"cd"]
         sortBy:@"name"]
         fetchWithTrigger:objectsChanged];

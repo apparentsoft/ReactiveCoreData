@@ -405,9 +405,9 @@ describe(@"Cross-Thread functionality", ^{
     });
 
     it(@"Has a signal that sends after a save", ^{
-
+        NSManagedObjectContext *context = ctx;
         [ctx.rcd_saved subscribeNext:^(id x) {
-            expect([x object]).to.equal(ctx);
+            expect([x object]).to.equal(context);
             completed = YES;
         }];
 
@@ -471,7 +471,7 @@ describe(@"Document-based contexts", ^{
             subscribeNext:^(NSManagedObjectContext *context1) {
                 expect(deallocated).to.beFalsy();
             }];
-        [disposable rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
+        [disposable.rac_deallocDisposable addDisposable:[RACDisposable disposableWithBlock:^{
             deallocated = YES;
         }]];
         }
