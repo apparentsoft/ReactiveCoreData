@@ -9,11 +9,6 @@
 #import "RACSignal+ReactiveCoreData.h"
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 
-@interface RACSignal ()
-
-- (NSArray *)convertToSignals:(NSArray *)args;
-@end
-
 @implementation RACSignal (ReactiveCoreData)
 - (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
 {

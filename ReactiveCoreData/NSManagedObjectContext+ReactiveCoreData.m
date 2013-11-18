@@ -7,11 +7,10 @@
 //
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <ReactiveCocoa/NSNotificationCenter+RACSupport.h>
 #import <objc/runtime.h>
-#import <ReactiveCocoa/EXTScope.h>
 #import "NSManagedObjectContext+ReactiveCoreData.h"
 #import "RACSignal+ReactiveCoreData.h"
-#import "NSNotificationCenter+RACSupport.h"
 
 static NSString const *kRCDCurrentManagedObjectContext = @"kRCDCurrentManagedObjectContext";
 static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectContext";
@@ -95,7 +94,7 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
     if (!merged) {
         merged = [RACSubject subject];
         objc_setAssociatedObject(self, _cmd, merged, OBJC_ASSOCIATION_RETAIN);
-        [self rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
+        [self.rac_deallocDisposable addDisposable:[RACDisposable disposableWithBlock:^{
             [merged sendCompleted];
         }]];
     }
@@ -125,11 +124,10 @@ static NSString const *kRCDMainManagedObjectContext = @"kRCDMainManagedObjectCon
     moc.persistentStoreCoordinator = mainContext.persistentStoreCoordinator;
 
     [NSNotificationCenter.defaultCenter addObserver:moc selector:@selector(rcd_mergeChanges:) name:NSManagedObjectContextDidSaveNotification object:moc];
-    [moc rac_addDeallocDisposable:[RACDisposable disposableWithBlock:^{
+    [moc.rac_deallocDisposable addDisposable:[RACDisposable disposableWithBlock:^{
         [NSNotificationCenter.defaultCenter removeObserver:moc name:NSManagedObjectContextDidSaveNotification object:moc];
     }]];
 
-//    NSLog(@"Creating a NEW CHILD MOC (%@) with main MOC:%@", moc, mainContext);
     return moc;
 }
 
