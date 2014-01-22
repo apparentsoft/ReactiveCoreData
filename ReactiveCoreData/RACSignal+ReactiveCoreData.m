@@ -163,27 +163,13 @@
 {
     RACScheduler *scheduler = [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.ReactiveCoreData.background"];
     NSManagedObjectContext *currentContext = [NSManagedObjectContext currentContext];
-//    NSLog(@"PERFORM IN BACKGROUND: current MOC: %@", currentContext);
-    return [[RACSignal createSignal:^(id<RACSubscriber> subscriber) {
-        return [self subscribeNext:^(id x) {
-            [scheduler schedule:^{
-                NSManagedObjectContext *childContext = [NSManagedObjectContext currentContext];
-//                NSLog(@"PERFORM IN BACKGROUND: Child MOC: %@", childContext);
-                if (!childContext) {
-                    childContext = [NSManagedObjectContext contextWithMainContext:currentContext];
-                }
-                [childContext attachToCurrentScheduler];
-                [subscriber sendNext:x];
-            }];
-        } error:^(NSError *error) {
-            [scheduler schedule:^{
-                [subscriber sendError:error];
-            }];
-        } completed:^{
-            [scheduler schedule:^{
-                [subscriber sendCompleted];
-            }];
-        }];
+    
+    return [[[self deliverOn:scheduler] doNext:^(id x) {
+        NSManagedObjectContext *childContext = [NSManagedObjectContext currentContext];
+        if (!childContext) {
+            childContext = [NSManagedObjectContext contextWithMainContext:currentContext];
+        }
+        [childContext attachToCurrentScheduler];
     }] setNameWithFormat:@"[%@] -performInBackgroundContext", self.name];
 }
 
