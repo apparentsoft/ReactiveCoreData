@@ -25,6 +25,9 @@
 // Returns a signal that contains the count of results of the fetch request in current NSManagedObjectContext
 - (RACSignal *)count;
 
+// Modifies NSFetchRequest to set predicate
+- (RACSignal *)where:(id)predicateOrSignal;
+
 // Returns a signal with NSFetchRequest's predicate modified according to format and its arguments
 //
 // The format is passed to NSPredicate as is

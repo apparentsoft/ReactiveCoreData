@@ -45,6 +45,17 @@
 }
 
 #pragma mark - Operations modifying NSFetchRequest
+
+- (RACSignal *)where:(id)predicateOrSignal;
+{
+    RACSignal *predicateSignal = [self rcd_convertToSignal:predicateOrSignal];
+    return [[[self combineLatestWith:predicateOrSignal]
+        reduceEach:^(NSFetchRequest *request, NSPredicate *predicate) {
+            request.predicate = predicate;
+            return request;
+        }] setNameWithFormat:@"[%@] -where:%@", self.name, predicateOrSignal];
+}
+
 - (RACSignal *)where:(id)key equals:(id)value;
 {
     return [self where:@"%K == %@" args:@[key, value]];
@@ -52,7 +63,7 @@
 
 - (RACSignal *)where:(NSString *)format args:(NSArray *)args;
 {
-    NSArray *signals = [self convertToSignals:args];
+    NSArray *signals = [self rcd_convertToSignals:args];
     return [[[self combineLatestWith:[RACSignal combineLatest:signals]]
         reduceEach:^(NSFetchRequest *req, RACTuple *arguments) {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:format argumentArray:[arguments allObjects]];
@@ -61,27 +72,11 @@
         }] setNameWithFormat:@"[%@] -where:%@ args:%@", self.name, format, args];
 }
 
-- (RACSignal *)convertToSignal:(id)valueOrSignal;
-{
-    if ([valueOrSignal isKindOfClass:[RACStream class]])
-        return valueOrSignal;
-    return [RACSignal return:valueOrSignal];
-}
-
-- (NSArray *)convertToSignals:(NSArray *)args;
-{
-    NSMutableArray *signals = [NSMutableArray arrayWithCapacity:[args count]];
-    for (id arg in args) {
-        [signals addObject:[self convertToSignal:arg]];
-    }
-    return [signals copy];
-}
-
 - (RACSignal *)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
 {
     NSParameterAssert(valueOrSignal);
     NSParameterAssert(key);
-    return [[self convertToSignal:valueOrSignal]
+    return [[self rcd_convertToSignal:valueOrSignal]
         flattenMap:^(NSString *filter) {
             if ([filter length] > 0) {
                 NSString *whereClause;
@@ -100,7 +95,7 @@
 
 - (RACSignal *)limit:(id)limitOrSignal;
 {
-    RACSignal *limitSignal = [self convertToSignal:limitOrSignal];
+    RACSignal *limitSignal = [self rcd_convertToSignal:limitOrSignal];
     return [[[self combineLatestWith:limitSignal]
         reduceEach:^(NSFetchRequest *req, NSNumber *limit) {
             req.fetchLimit = limit.unsignedIntegerValue;
@@ -118,7 +113,7 @@
 
 - (RACSignal *)sortBy:(id)sortOrSignal;
 {
-    RACSignal *sortSignal = [self convertToSignal:sortOrSignal];
+    RACSignal *sortSignal = [self rcd_convertToSignal:sortOrSignal];
     return [[[self combineLatestWith:sortSignal]
         reduceEach:^(NSFetchRequest *fetchRequest, id sortValue) {
             if ([sortValue isKindOfClass:[NSSortDescriptor class]]) {
@@ -233,6 +228,24 @@
         }
         return objects;
     }];
+}
+
+#pragma mark - Private
+
+- (RACSignal *)rcd_convertToSignal:(id)valueOrSignal;
+{
+    if ([valueOrSignal isKindOfClass:[RACStream class]])
+        return valueOrSignal;
+    return [RACSignal return:valueOrSignal];
+}
+
+- (NSArray *)rcd_convertToSignals:(NSArray *)args;
+{
+    NSMutableArray *signals = [NSMutableArray arrayWithCapacity:[args count]];
+    for (id arg in args) {
+        [signals addObject:[self convertToSignal:arg]];
+    }
+    return [signals copy];
 }
 
 @end
