@@ -14,16 +14,16 @@
 //
 // If the fetch request fetchLimit is set to 1, the signal will carry the object itself
 // if fetchLimit != 1, then the signal will carry the resulting array
-- (instancetype)fetchInMOC:(NSManagedObjectContext *)moc;
+- (RACSignal *)fetchInMOC:(NSManagedObjectContext *)moc;
 
 // Returns signal with the count of results that would've returned in `fetchInMOC:`
-- (instancetype)countInMOC:(NSManagedObjectContext *)moc;
+- (RACSignal *)countInMOC:(NSManagedObjectContext *)moc;
 
 // Returns a signal that contains the NSArray of the fetch result in current NSManagedObjectContext
-- (instancetype)fetch;
+- (RACSignal *)fetch;
 
 // Returns a signal that contains the count of results of the fetch request in current NSManagedObjectContext
-- (instancetype)count;
+- (RACSignal *)count;
 
 // Returns a signal with NSFetchRequest's predicate modified according to format and its arguments
 //
@@ -32,12 +32,12 @@
 // Any new value in any of the argument signals will result in update of the fetch request
 // and possible execution of the request, if there's a `fetch` later.
 // This brings the predicates into the reactive world
-- (instancetype)where:(NSString *)format args:(NSArray *)args;
+- (RACSignal *)where:(NSString *)format args:(NSArray *)args;
 
 // A convenience method for a common predicate case
 //
 // Create a "%K == %@" predicate with key and value as arguments
-- (instancetype)where:(id)key equals:(id)value;
+- (RACSignal *)where:(id)key equals:(id)value;
 
 // A convenience method for a common predicate case
 //
@@ -47,10 +47,10 @@
 // This is useful when the using it to filter text from the search field, which can be empty
 // `options` parameter is an optional string like `@"cd"` that can be added after CONTAINS inside brackets.
 // For example, passing @"cd" for `options` will result in a CONTAINS[cd] predicate
-- (instancetype)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
+- (RACSignal *)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
 
 // Modifies the NSFetchRequest to set passed-in limit
-- (instancetype)limit:(id)limitOrSignal;
+- (RACSignal *)limit:(id)limitOrSignal;
 
 // Modifies NSFetchRequest to set sortDescriptor
 //
@@ -63,13 +63,13 @@
 - (RACSignal *)sortBy:(id)sortOrSignal;
 
 // Modifies the NSFetchRequest. Sets resultType to NSManagedObjectIDResultType
-- (instancetype)IDResultType;
+- (RACSignal *)IDResultType;
 
 // Saves current NSManagedObjectContext and waits for it to merge
 //
 // Send an error if couldn't save
 // Passes next from previous subscriber on to the next one
-- (instancetype)saveContext;
+- (RACSignal *)saveContext;
 
 // Sets context as current context and return self
 //
