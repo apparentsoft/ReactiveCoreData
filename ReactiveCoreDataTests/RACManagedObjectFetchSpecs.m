@@ -172,7 +172,7 @@ describe(@"FetchRequest operations:", ^{
     });
 	
 	it(@"updates fetch request with a constant predicate", ^{
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == Jane"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == 'Jane'"];
         NSArray *result = [[[[Parent findAll] where:predicate] fetch] first];
         expect(result).to.equal(@[ Jane ]);
 	});
@@ -185,11 +185,11 @@ describe(@"FetchRequest operations:", ^{
             final_result = x;
         }];
         
-        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == Jane"]];
-        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == Joe"]];
+        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == 'Jane'"]];
+        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == 'Joe'"]];
         [predicateSignal sendCompleted];
         
-        expect(final_result).to.equal(@[ @[ Jane ], @[ Joe ] ]);
+        expect(final_result).to.equal((@[ @[ Jane ], @[ Joe ] ]));
 	});
 
     it(@"where for property constant value", ^{

@@ -49,7 +49,7 @@
 - (RACSignal *)where:(id)predicateOrSignal;
 {
     RACSignal *predicateSignal = [self rcd_convertToSignal:predicateOrSignal];
-    return [[[self combineLatestWith:predicateOrSignal]
+    return [[[self combineLatestWith:predicateSignal]
         reduceEach:^(NSFetchRequest *request, NSPredicate *predicate) {
             request.predicate = predicate;
             return request;
@@ -229,7 +229,7 @@
 {
     NSMutableArray *signals = [NSMutableArray arrayWithCapacity:[args count]];
     for (id arg in args) {
-        [signals addObject:[self convertToSignal:arg]];
+        [signals addObject:[self rcd_convertToSignal:arg]];
     }
     return [signals copy];
 }
