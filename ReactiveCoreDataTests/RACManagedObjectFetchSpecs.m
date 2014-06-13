@@ -170,6 +170,27 @@ describe(@"FetchRequest operations:", ^{
         Joe.age = 40;
         Jane.age = 35;
     });
+	
+	it(@"updates fetch request with a constant predicate", ^{
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == 'Jane'"];
+        NSArray *result = [[[[Parent findAll] where:predicate] fetch] first];
+        expect(result).to.equal(@[ Jane ]);
+	});
+	
+	it(@"updates fetch request with a predicate signal", ^{
+        RACSubject *predicateSignal = [RACSubject subject];
+        __block id final_result;
+        
+        [[[[[Parent findAll] where:predicateSignal] fetch] collect] subscribeNext:^(id x) {
+            final_result = x;
+        }];
+        
+        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == 'Jane'"]];
+        [predicateSignal sendNext:[NSPredicate predicateWithFormat:@"name == 'Joe'"]];
+        [predicateSignal sendCompleted];
+        
+        expect(final_result).to.equal((@[ @[ Jane ], @[ Joe ] ]));
+	});
 
     it(@"where for property constant value", ^{
         NSArray *result = [[[Parent.findAll where:@"name" equals:@"Jane"] fetch] first];
