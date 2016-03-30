@@ -58,7 +58,7 @@
 
 - (RACSignal *)whereObjectMatches:(id)key equals:(id)value;
 {
-    return [self where:@"%K == %@" args:@[key, value]];
+    return [self whereObjectMatches:@"%K == %@" args:@[key, value]];
 }
 
 - (RACSignal *)whereObjectMatches:(NSString *)format args:(NSArray *)args;
@@ -86,7 +86,7 @@
                 else {
                     whereClause = @"%K CONTAINS %@";
                 }
-                return [self where:whereClause args:@[key, filter]];
+                return [self whereObjectMatches:whereClause args:@[key, filter]];
             }
             else
                 return self;
