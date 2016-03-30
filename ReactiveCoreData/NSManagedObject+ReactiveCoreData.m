@@ -35,7 +35,7 @@
 
 + (NSString *)entityName;
 {
-    return NSStringFromClass(self);
+    return [[NSStringFromClass(self)  componentsSeparatedByString:@"."] lastObject];
 }
 
 + (instancetype)insert;
