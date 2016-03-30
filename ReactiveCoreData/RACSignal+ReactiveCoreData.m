@@ -18,7 +18,7 @@
             return [[moc executeRequest:req] map:^id(id value) {
                 return [value lastObject];
             }];
-        }
+        } 
         else {
             return [moc executeRequest:req];
         }
@@ -46,7 +46,7 @@
 
 #pragma mark - Operations modifying NSFetchRequest
 
-- (RACSignal *)where:(id)predicateOrSignal;
+- (RACSignal *)whereObjectMatches:(id)predicateOrSignal;
 {
     RACSignal *predicateSignal = [self rcd_convertToSignal:predicateOrSignal];
     return [[[self combineLatestWith:predicateSignal]
@@ -56,12 +56,12 @@
         }] setNameWithFormat:@"[%@] -where:%@", self.name, predicateOrSignal];
 }
 
-- (RACSignal *)where:(id)key equals:(id)value;
+- (RACSignal *)whereObjectMatches:(id)key equals:(id)value;
 {
-    return [self where:@"%K == %@" args:@[key, value]];
+    return [self whereObjectMatches:@"%K == %@" args:@[key, value]];
 }
 
-- (RACSignal *)where:(NSString *)format args:(NSArray *)args;
+- (RACSignal *)whereObjectMatches:(NSString *)format args:(NSArray *)args;
 {
     NSArray *signals = [self rcd_convertToSignals:args];
     return [[[self combineLatestWith:[RACSignal combineLatest:signals]]
@@ -72,7 +72,7 @@
         }] setNameWithFormat:@"[%@] -where:%@ args:%@", self.name, format, args];
 }
 
-- (RACSignal *)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
+- (RACSignal *)whereObjectMatches:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
 {
     NSParameterAssert(valueOrSignal);
     NSParameterAssert(key);
@@ -86,7 +86,7 @@
                 else {
                     whereClause = @"%K CONTAINS %@";
                 }
-                return [self where:whereClause args:@[key, filter]];
+                return [self whereObjectMatches:whereClause args:@[key, filter]];
             }
             else
                 return self;
