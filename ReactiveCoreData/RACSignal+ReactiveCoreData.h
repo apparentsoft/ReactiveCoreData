@@ -27,7 +27,7 @@
 
 // Modifies NSFetchRequest to set predicate
 - (RACSignal *)whereObjectMatches:(id)predicateOrSignal;
-
+ 
 // Returns a signal with NSFetchRequest's predicate modified according to format and its arguments
 //
 // The format is passed to NSPredicate as is
