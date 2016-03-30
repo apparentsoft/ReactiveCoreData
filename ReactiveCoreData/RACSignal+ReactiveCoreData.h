@@ -26,7 +26,7 @@
 - (RACSignal *)count;
 
 // Modifies NSFetchRequest to set predicate
-- (RACSignal *)where:(id)predicateOrSignal;
+- (RACSignal *)whereObjectMatches:(id)predicateOrSignal;
 
 // Returns a signal with NSFetchRequest's predicate modified according to format and its arguments
 //
@@ -35,12 +35,12 @@
 // Any new value in any of the argument signals will result in update of the fetch request
 // and possible execution of the request, if there's a `fetch` later.
 // This brings the predicates into the reactive world
-- (RACSignal *)where:(NSString *)format args:(NSArray *)args;
+- (RACSignal *)whereObjectMatches:(NSString *)format args:(NSArray *)args;
 
 // A convenience method for a common predicate case
 //
 // Create a "%K == %@" predicate with key and value as arguments
-- (RACSignal *)where:(id)key equals:(id)value;
+- (RACSignal *)whereObjectMatches:(id)key equals:(id)value;
 
 // A convenience method for a common predicate case
 //
@@ -50,7 +50,7 @@
 // This is useful when the using it to filter text from the search field, which can be empty
 // `options` parameter is an optional string like `@"cd"` that can be added after CONTAINS inside brackets.
 // For example, passing @"cd" for `options` will result in a CONTAINS[cd] predicate
-- (RACSignal *)where:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
+- (RACSignal *)whereObjectMatches:(id)key contains:(id)valueOrSignal options:(NSString *)optionsOrNil;
 
 // Modifies the NSFetchRequest to set passed-in limit
 - (RACSignal *)limit:(id)limitOrSignal;
