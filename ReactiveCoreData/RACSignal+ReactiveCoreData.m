@@ -18,7 +18,7 @@
             return [[moc executeRequest:req] map:^id(id value) {
                 return [value lastObject];
             }];
-        }
+        } 
         else {
             return [moc executeRequest:req];
         }
